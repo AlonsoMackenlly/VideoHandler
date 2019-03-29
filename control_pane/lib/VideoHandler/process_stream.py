@@ -27,8 +27,15 @@ no_image = Image.open(os.getcwd() + "/django/control_pane/static/img/noimage.jpg
 
 class Functions:
     @staticmethod
-    def threadChecker(thr, title):
-        while thr['stop_trigger']
+    def threadChecker(thr, stream_id):
+        while True:
+            if thr.stop_trigger == False:
+                time.sleep(1)
+            else:
+                stream_object = Stream.objects.get(id=stream_id)
+                TranslationThread(stream_object)
+
+
 
     @staticmethod
     def updateStreamStatus(id, title, status):
@@ -125,7 +132,7 @@ class StreamControl:
 
             thread = TranslationThread(stream_object)
             thread.start()
-            thread = Thread(target=Functions.threadChecker, args=(thread, title,), name="thread-checker-%s" % title)
+            thread = Thread(target=Functions.threadChecker, args=(thread, stream_object.id,), name="thread-checker-%s" % title)
             thread.start()
 
             msg = "Thread %s is successfully started" % title
@@ -224,6 +231,7 @@ class TranslationThread(Thread):
         Thread.__init__(self, *args, **kwargs)
         self.name = stream.title
         self.stream = stream
+        self.stop_trigger = False
     def run(self):
         title = self.stream.title
         capture = cv2.VideoCapture(self.stream.stream_in)
@@ -238,16 +246,21 @@ class TranslationThread(Thread):
             time.sleep(1);
         nn_required = self.stream.nn_required
         telemetry_required = self.stream.telemetry_required
-        self.stream.objects.filter(title=title).update(width=w, height=h, fps=fps)
+        self.stream.width = w
+        self.stream.height = h
+        self.stream.fps = fps
+        self.stream.save(update_fields=['width', 'height', 'fps'])
         log("Connected to stream %s with parameters W=%d, H=%d, FPS=%d " % (self.stream.stream_in, w, h, fps), "green")
 
         if capture.isOpened():  # TODO: Сделать перезапуск
+            last_packet = time.time()
             while capture.isOpened():
                 ret, frame = capture.read()
                 if streams[title, "stop_trigger"]:
                     streams[title, "img"] = no_image
                     break
                 if ret:
+                    last_packet = time.time()
                     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  #######################################
                     streams[title, "img"] = frame
                     # log("--- Frame retranslated on %s ---" % title, 'white')
@@ -276,12 +289,16 @@ class TranslationThread(Thread):
                         text = str(datetime.datetime.now().strftime("%Y.%m.%d %H:%M:%S"))
                         Functions.draw_text_on_cv_frame(title, text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1,
                                                         [255, 255, 255], 2)
-
                     # /tmp/streams/{title}
-
                 else:
-                    log("Stream %s is not available" % title, "red")
-                    time.sleep(1)
+                    if time.time() - last_packet > 10:
+                        self.stop_trigger = True
+                        log("Stream %s is not available" % title, "red")
+                        time.sleep(1)
+                        break
+        else:
+            self.stop_trigger = True
+            log("Stream %s is not available" % title, "red")
         capture.release()
         streams[title, "stop_trigger"] = True
         log("Thread %s is not alive" % title, "red")
