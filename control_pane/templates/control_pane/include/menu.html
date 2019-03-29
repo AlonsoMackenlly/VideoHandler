@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="http://10.8.0.103:8085/streams">NN.Sokol <span
+                        class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="http://video.sokol.center:42000/">Xeoma</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    Сервер
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#" onclick="actionStreams('start-all')">Запуск</a>
+                    <a class="dropdown-item" href="#" onclick="actionStreams('stop-all')">Остановка</a>
+                    <a class="dropdown-item" href="#" onclick="actionStreams('restart-all')">Перезапуск</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button"
+                   data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    Поток
+                </a>
+                <div class="dropdown-menu disabled" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item btn btn-primary" href="#" data-toggle="modal"
+                       data-target="#Modal" data-whatever="@mdo">Добавить</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>

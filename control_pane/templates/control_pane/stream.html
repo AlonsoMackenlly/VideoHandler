@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include 'control_pane/include/head.html' %}
+    <title>Поток</title>
+</head>
+
+<body>
+{% include 'control_pane/include/menu.html' %}
+
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-lg-10 col-sm-8">
+            <a href={{stream_pk.stream_input}}><img class="stream-img mw-100"
+                                                    src="{{ DRONE_IP }}:{{ VIDEO_PORT }}/stream?title={{stream_pk.title}}"
+                                                    alt="No image :("/></a>
+
+            <h4 id="stream-title">{{stream_pk.title}}</h4>
+        </div>
+        <div class="stream-controls col-lg-2 col-sm-4 border p-2">
+            <button type="button" class="font-weight-bold btn-block btn btn-warning stream-button-start" onclick="actionStream('start', {{ stream_pk.id }})">
+                Старт
+            </button>
+            <button type="button" class="font-weight-bold btn-block btn btn-warning stream-button-stop" onclick="actionStream('stop', {{ stream_pk.id }})">
+                Стоп
+            </button>
+            <button type="button" class="font-weight-bold btn-block btn btn-warning stream-button-restart" onclick="actionStream('restart', {{ stream_pk.id }})">
+                Рестарт
+            </button>
+
+            <form class="stream-">
+                <div>
+                    <label for="settings-stream-title" class="col-form-label">Название:</label>
+                    <input name="title" type="text" class="disabled form-control" id="settings-stream-title" value = {{stream_pk.title}} disabled>
+                </div>
+                <div>
+                    <label for="settings-stream-stream_in" class="col-form-label">Ссылка:</label>
+                    <input name="stream_input" type="text" class="form-control" id="settings-stream-stream_in" value = {{stream_pk.stream_in}}>
+                </div>
+                <div>
+                    <label for="settings-stream-uid" class="col-form-label">ID дрона:</label>
+                    <input name="width" type="text" class="form-control" id="settings-stream-uid" value = {{stream_pk.uid}}>
+                </div>
+                <div>
+                    <label for="settings-stream-protocol" class="col-form-label">Протокол:</label>
+                    <input name="width" type="text" class="form-control" id="settings-stream-protocol" value = {{stream_pk.protocol}}>
+                </div>
+                <div>
+                    <label for="settings-stream-record_path" class="col-form-label">Путь сохранения видео:</label>
+                    <input name="width" type="text" class="form-control" id="settings-stream-record_path" value = {{stream_pk.record_path}}>
+                </div>
+                <div>
+                    <label for="settings-stream-tmp_image_path" class="col-form-label">Путь сохранения картинки:</label>
+                    <input name="width" type="text" class="form-control" id="settings-stream-tmp_image_path" value = {{stream_pk.tmp_image_path}}>
+                </div>
+                <div class ="stream-checkbox">
+                    {% if stream_pk.nn_required %}
+                    <input class="form-check-input" type="checkbox" id="settings-stream-nn_required" checked>
+                    {% else %}
+                    <input class="form-check-input" type="checkbox" id="settings-stream-nn_required" unchecked>
+                    {% endif %}
+                    <label class="form-check-label" for="settings-stream-nn_required">
+                        Наложение нейросети
+                    </label>
+                </div>
+                <div class ="stream-checkbox">
+                    {% if stream_pk.telemetry_required %}
+                    <input class="form-check-input" type="checkbox" checked id="settings-stream-telemetry_required">
+                    {% else %}
+                    <input class="form-check-input" type="checkbox" unchecked id="settings-stream-telemetry_required">
+                    {% endif %}
+                    <label class="form-check-label" for="settings-stream-telemetry_required">
+                        Наложение телеметрии
+                    </label>
+                </div>
+                <button type="button" class="font-weight-bold btn btn-danger" class="button stream-button-start float-right" onclick="actionStream('delete', {{ stream_pk.id }})">
+                    Удалить
+                </button>
+                <button type="button" class="font-weight-bold btn btn-primary stream-button-start float-right" onclick="updateStream({{ stream_pk.id }})">
+                    Сохранить
+                </button>
+            </form>
+        </div>
+
+
+    </div>
+</div>
+
+{% include 'control_pane/include/modal_add_stream.html' %}
+</body>
+</html>

@@ -1,0 +1,29 @@
+/* streamlist */
+
+.streamlist-row {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.streamlist-video {
+    max-height: 300px;
+}
+
+.streamlist-img {
+    max-height: 768px;
+}
+
+.streamlist-info {
+
+}
+
+/* stream */
+.stream-img {
+    /*max-width: 100%;*/
+    /*max-height: 768px;*/
+    max-height: 88vh
+}
+
+.stream-checkbox{
+    margin: 8px 0px 8px 20px;
+}

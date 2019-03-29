@@ -1,0 +1,39 @@
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Добавить поток</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add_form">
+                    <div class="form-group">
+                        <label for="modal-stream-title" class="col-form-label">Название:</label>
+                        <input name="title" type="text" class="form-control" id="modal-stream-title">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-stream-stream_in" class="col-form-label">Ссылка:</label>
+                        <input name="stream_input" type="text" class="form-control" id="modal-stream-stream_in">
+                    </div>
+<!--                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="modal-stream-nn_required">
+                        <label class="form-check-label" for="modal-stream-nn_required">Использовать нейросеть</label>
+                    </div>-->
+                    <div class="form-group">
+                        <label for="modal-stream-uid" class="col-form-label">ID дрона:</label>
+                        <input name="width" type="text" class="form-control" id="modal-stream-uid">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary"
+                        onclick="createStream()">Send message
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

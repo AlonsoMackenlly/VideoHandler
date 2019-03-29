@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:http="http://www.w3.org/1999/xhtml" xmlns:height="http://www.w3.org/1999/xhtml">
+<head>
+    {% include 'control_pane/include/head.html' %}
+</head>
+
+<body>
+{% include 'control_pane/include/menu.html' %}
+
+<div class="container-fluid">
+    <div class="row streamlist-row">
+        {% for stream in streams %}
+        <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2 mt-5 d-flex">
+            <div class="streamlist border d-flex flex-column p-3 ">
+                <div class="streamlist-video my-auto mx-0">
+                    <a href=stream/{{stream.id}}> <img
+                            class="streamlist-img img-fluid rounded mx-auto mw-100"
+                            src="{{ DRONE_IP }}:{{ VIDEO_PORT }}/stream?title={{ stream.title }}"
+                            alt="No image :("
+                    /></a>
+                </div>
+                <div class="streamlist-info">
+                    <a href=stream/{{stream.id}}> <h5><p class="text-center">{{ stream.title }}</p></h5></a>
+                    <p class="text-center">{{ stream.width }}x{{ stream.height }}@{{ stream.fps }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% include 'control_pane/include/modal_add_stream.html' %}
+
+</body>
+</html>
+

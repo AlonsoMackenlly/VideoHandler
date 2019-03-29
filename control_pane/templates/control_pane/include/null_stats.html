@@ -1,0 +1,95 @@
+<div id="copter_stats_{{ copter.id }}" data-copter-id="{{ copter.id }}" class="copter_stats">
+    <div class="container-fluid">
+        <div class="col-4-stats">
+            <div class="row1">
+                <div class="col col1">
+                    <div class="statistic-value">
+                        <div class="first-child">
+                            <i class="fa fa-area-chart" aria-hidden="true"></i>
+                            Высота
+                        </div>
+                        <div>
+                            <div id="altitude">-</div>
+                        </div>
+                    </div>
+                    <div class="statistic-value">
+                        <div class="first-child">
+                            <i class="fa fa-tachometer" aria-hidden="true"></i>
+                            Скорость
+                        </div>
+                        <div>
+                            <div id="speed">-</div>
+                        </div>
+                    </div>
+                    <div class="statistic-value">
+                        <div class="first-child">
+                            <i class="fa fa-info" aria-hidden="true"></i>
+                            Состояние
+                        </div>
+                        <div>
+                            <div id="state">-</div>
+                        </div>
+                    </div>
+                    <div class="statistic-value">
+                        <div class="first-child">
+                            <i class="fa fa-crosshairs" aria-hidden="true"></i>
+                            Режим
+                        </div>
+                        <div>
+                            <div id="mode">-</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col2">
+                    <div class="statistic-value">
+                        <div class="first-child">
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            Батарея
+
+
+                        </div>
+                        <div>
+                            <div id="battery_level">
+                                - %, - V
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="statistic-value">
+                        <div class="first-child">
+                            <i class="fa fa-heart" aria-hidden="true"></i>
+                            Последний отклик
+                        </div>
+                        <div>
+                            <div id="last_heartbeat">-</div>
+                        </div>
+                    </div>
+
+                    <div class="statistic-value">
+                        <div class="first-child">
+                            <i class="fa fa-globe" aria-hidden="true"></i>
+                            Спутников зафиксировано
+                        </div>
+                        <div>
+                            <div id="gps_fixed">0</div>
+                        </div>
+                    </div>
+                    <div class="statistic-value">
+                        <div class="first-child">
+                            <i class="fa fa-wifi" aria-hidden="true"></i>
+                            Подключение
+                        </div>
+                        <div>
+                            <div id="connection">{{ copter.properties.connection }}</div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+</div>

@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="73cdc749-285f-4c2f-9984-8971157832a8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/copter3.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/R_User_Library.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bucardo.restart.reason.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/c.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cam.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/admin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/apps.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DataService.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DrineDirectConnectionTest.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneDirect.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneDirectConnection.copy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneDirectConnection.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneDirectMessages.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneHub.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneHubMessages.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneWsConnection.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/VideoHandler/MobileNetSSD.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/VideoHandler/MobileNetSSD_deploy.caffemodel" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/VideoHandler/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/VideoHandler/living_room.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/VideoHandler/process_stream.copy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/VideoHandler/process_stream.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/VideoHandler/process_stream.py.backup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/VideoHandler/visualize_cv2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/VideoHandler/yolo.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/VideoHandler/yolo_video.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/lib/tornado_hub.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/management/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/management/commands/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/management/commands/start_hub.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/management/commands/video_handler.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/migrations/0001_initial.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/migrations/0002_auto_20190201_2100.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/migrations/0003_auto_20190305_1112.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/migrations/0004_auto_20190311_1240.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/migrations/0005_auto_20190314_0725.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/migrations/0006_auto_20190324_0704.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/migrations/0007_auto_20190324_0705.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/migrations/0008_auto_20190324_0709.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/migrations/0009_stream_status.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/migrations/0010_auto_20190328_1054.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/migrations/0011_auto_20190329_1019.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/migrations/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/models.drone.copy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/models.sokol.copy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/css/bootstrap-theme.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/css/bootstrap-theme.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/css/bootstrap-theme.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/css/bootstrap-theme.min.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/css/bootstrap.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/css/bootstrap.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/css/bootstrap.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/css/bootstrap.min.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/css/custom.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/css/stream.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/blank.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_close.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_loading.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_nav_left.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_nav_right.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_shadow_e.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_shadow_n.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_shadow_ne.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_shadow_nw.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_shadow_s.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_shadow_se.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_shadow_sw.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_shadow_w.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_title_left.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_title_main.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_title_over.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancy_title_right.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancybox-x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancybox-y.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/fancybox.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/jquery.easing-1.3.pack.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/jquery.fancybox-1.3.4.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/jquery.fancybox-1.3.4.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/jquery.fancybox-1.3.4.pack.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/fancybox/jquery.mousewheel-3.0.4.pack.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/favicon.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/images/control_pane/copter.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/images/control_pane/error.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/images/control_pane/image.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/images/control_pane/logo.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/img/no-image.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/img/noimage.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/Sortable.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/bootstrap.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/bootstrap.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/JCControllPane.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/app.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/base.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/bus_mixin.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/copter.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/copter_bottom_sidebar.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/copter_list_item.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/copter_menu.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/csrf.copy.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/map_control.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/map_drawing.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/map_object_template.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/notyfy.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/page_builder.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/routes_tab.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/vue_app.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/vue_notifications/CssGroup.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/vue_notifications/Notifications.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/vue_notifications/VelocityGroup.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/vue_notifications/defaults.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/vue_notifications/events.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/vue_notifications/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/vue_notifications/notyfy.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/vue_notifications/parser.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/vue_notifications/util.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/ws_listener.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/control_pane/ws_messages.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/custom.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/jquery-1.4.3.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/jquery.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/lightzoom.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/notify.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/npm.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/stream.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/vue.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/vue.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/static/js/vue2-filters.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/access.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/control.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/include/head.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/include/menu.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/include/modal_add_stream.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/include/null_stats.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/stream.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/stream_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/vue.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/wrapper.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/templatetags/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/templatetags/control_pane_extras.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/tests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_pane/views.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/base.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/close.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/copter.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/no_capture.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/point.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/point_start.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/settings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/wsgi.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/req.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/bootstrap-theme.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/bootstrap-theme.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/bootstrap-theme.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/bootstrap-theme.min.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/bootstrap.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/bootstrap.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/bootstrap.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/bootstrap.min.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/custom.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/blank.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_close.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_loading.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_nav_left.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_nav_right.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_shadow_e.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_shadow_n.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_shadow_ne.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_shadow_nw.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_shadow_s.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_shadow_se.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_shadow_sw.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_shadow_w.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_title_left.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_title_main.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_title_over.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancy_title_right.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancybox-x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancybox-y.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/fancybox.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/jquery.easing-1.3.pack.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/jquery.fancybox-1.3.4.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/jquery.fancybox-1.3.4.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/jquery.fancybox-1.3.4.pack.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fancybox/jquery.mousewheel-3.0.4.pack.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/control_pane/copter.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/control_pane/error.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/control_pane/logo.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/Sortable.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/bootstrap.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/bootstrap.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/JCControllPane.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/app.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/base.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/bus_mixin.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/copter.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/copter_bottom_sidebar.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/copter_list_item.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/copter_menu.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/csrf.copy.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/map_control.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/map_drawing.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/map_object_template.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/notyfy.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/page_builder.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/routes_tab.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/vue_app.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/vue_notifications/CssGroup.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/vue_notifications/Notifications.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/vue_notifications/VelocityGroup.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/vue_notifications/defaults.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/vue_notifications/events.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/vue_notifications/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/vue_notifications/notyfy.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/vue_notifications/parser.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/vue_notifications/util.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/ws_listener.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/control_pane/ws_messages.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/custom.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/jquery-1.4.3.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/jquery.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/lightzoom.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/npm.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/vue.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/vue.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/vue2-filters.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/stream.h264" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/control_pane/lib/VideoHandler/process_stream.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="314">
+              <caret line="229" column="55" lean-forward="true" selection-start-line="229" selection-start-column="55" selection-end-line="229" selection-end-column="55" />
+              <folding>
+                <element signature="e#0#15#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>translation</find>
+      <find>TranslationThread</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/control_pane/lib/VideoHandler/process_stream.py" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="1320" />
+    <option name="width" value="607" />
+    <option name="height" value="1047" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="copter3" type="b2602c69:ProjectViewProjectNode" />
+              <item name="copter3" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.deploy.options" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="video_handler" type="PythonConfigurationType" factoryName="Python">
+      <module name="copter3" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="sftp://root@localhost:10047/usr/bin/python3.6" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="/root/django/manage.py" />
+      <option name="PARAMETERS" value="video_handler" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="73cdc749-285f-4c2f-9984-8971157832a8" name="Default Changelist" comment="" />
+      <created>1553862936695</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1553862936695</updated>
+      <workItem from="1553862941767" duration="2394000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="2394000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Favorites" side_tool="true" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13486141" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Database Changes" />
+      <window_info anchor="bottom" id="Version Control" visible="true" weight="0.32998884" />
+      <window_info anchor="bottom" id="Python Console" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="File Transfer" weight="0.32998884" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="right" id="Database" />
+      <window_info anchor="right" id="Remote Host" visible="true" weight="0.32995737" />
+      <window_info anchor="right" id="R Packages" />
+      <window_info anchor="right" id="SciView" />
+      <window_info anchor="right" id="R Graphics" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/control_pane/lib/VideoHandler/process_stream.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="314">
+          <caret line="229" column="55" lean-forward="true" selection-start-line="229" selection-start-column="55" selection-end-line="229" selection-end-column="55" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

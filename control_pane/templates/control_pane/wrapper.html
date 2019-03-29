@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    {% load staticfiles %}
+    <link rel="shortcut icon" type="image/png" href="{% static "favicon.ico" %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'fancybox/jquery.fancybox-1.3.4.css' %}" type="text/css" media="screen">
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+    <!-- Яндекс карты -->
+    <script src="https://api-maps.yandex.ru/2.1.68/?lang=ru_RU" type="text/javascript"></script>
+    <!--/ Яндекс карты /-->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.6/dist/jquery.fancybox.min.css"/>
+    <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.6/dist/jquery.fancybox.min.js"></script>
+    <!-- 	<script src="{% static 'fancybox/jquery.fancybox-1.3.4.pack.js'%}"></script>
+        <script src="{% static 'fancybox/jquery.mousewheel-3.0.4.pack.js'%}"></script>
+        <script src="{% static 'fancybox/jquery.fancybox-1.3.4.js'%}"></script>
+
+         -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
+
+</head>
+<body>
+{% if show_head == "Y" %}
+    <div class="container">
+        <div class="header clearfix">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="presentation" {% block main-activity %}{% endblock %}><a href="/">Главная</a></li>
+                    <li role="presentation" {% block control-activity %}{% endblock %}><a href="/control">Панель
+                        управления</a></li>
+                    <li role="presentation"><a href="/streams">Видеохаб</a></li>
+
+                    <li role="presentation" {% block settings-activity %}{% endblock %}><a href="#">Параметры</a></li>
+                    <li role="presentation"><a href="/admin">Панель администратора</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <i class="far fa-eye"></i>
+    <i class="fas fa-crosshairs"></i>
+    <i class="far fa-pause-circle"></i>
+    <i class="far fa-play-circle"></i>
+    <i class="far fa-question-circle"></i>
+    <i class="fas fa-redo-alt"></i>
+    <i class="fas fa-reply"></i>
+    <i class="fas fa-reply-all"></i>
+    <i class="fas fa-route"></i>
+    <i class="far fa-stop-circle"></i>
+    <i class="fas fa-street-view"></i>
+    <i class="far fa-times-circle"></i>
+
+    <i class="fas fa-toggle-off"></i>
+    <i class="fas fa-toggle-on"></i>
+
+    <i class="fas fa-user-circle"></i>
+    <i class="fas fa-user-astronaut"></i>
+{% endif %}
+
+{% block content %}
+{% endblock %}
+
+{% if show_head == "Y" %}
+    <div class="container">
+        <footer class="footer">
+            <p>© 2018 ООО "Сокол".</p>
+        </footer>
+    </div>
+{% endif %}
+{% block js_scripts %}
+{% endblock %}
+<script type="text/javascript">
+
+    function getRandom(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    // namespace MJPEG { ...
+    {#var MJPEG = (function (module) {#}
+    {#    "use strict";#}
+    {##}
+    {#    // class Stream { ...#}
+    {#    module.Stream = function (args) {#}
+    {#        var self = this;#}
+    {#        var autoStart = args.autoStart || false;#}
+    {#        self.canvas = args.canvas;#}
+    {#        self.url = args.url;#}
+    {#        self.refreshRate = args.refreshRate;#}
+    {#        self.onStart = args.onStart || null;#}
+    {#        self.onFrame = args.onFrame || null;#}
+    {#        self.onStop = args.onStop || null;#}
+    {#        self.callbacks = {};#}
+    {#        self.running = false;#}
+    {#        self.frameTimer = 0;#}
+    {##}
+    {#        self.img = new Image();#}
+    {#        if (autoStart) {#}
+    {#            self.img.onload = self.start;#}
+    {#        }#}
+    {#        self.img.src = self.url;#}
+    {##}
+    {#        function setRunning(running) {#}
+    {#            self.running = running;#}
+    {#            if (self.running) {#}
+    {#                self.img.src = self.url + "?timestamp=" + Date.now();#}
+    {##}
+    {#                self.frameTimer = setInterval(function () {#}
+    {#                    if (self.onFrame) {#}
+    {#                        //try{#}
+    {#                        self.onFrame(self.img, self.canvas);#}
+    {#                        //}#}
+    {#                        //catch (e) {#}
+    {##}
+    {#                        //}#}
+    {##}
+    {#                    }#}
+    {#                }, self.refreshRate);#}
+    {#                if (self.onStart) {#}
+    {#                    self.onStart();#}
+    {#                }#}
+    {#            } else {#}
+    {#                //self.img.src = "#";#}
+    {#                //clearInterval(self.frameTimer);#}
+    {#                // if (self.onStop) {#}
+    {#                //     self.onStop();#}
+    {#                // }#}
+    {#            }#}
+    {#        }#}
+    {##}
+    {#        self.start = function () {#}
+    {#            setRunning(true);#}
+    {#        }#}
+    {#        self.stop = function () {#}
+    {#            //setRunning(false);#}
+    {#        }#}
+    {#    };#}
+    {##}
+    {#    // class Player { ...#}
+    {#    module.Player = function (canvas, url, options) {#}
+    {##}
+    {#        var self = this;#}
+    {##}
+    {#        if (typeof canvas === "string" || canvas instanceof String) {#}
+    {#            canvas = document.getElementById(canvas);#}
+    {#        }#}
+    {##}
+    {#        var context = canvas.getContext("2d");#}
+    {#        if (!options) {#}
+    {#            options = {};#}
+    {#        }#}
+    {#        options.url = url;#}
+    {#        options.refreshRate = 0;#}
+    {#        options.canvas = canvas;#}
+    {#        options.onFrame = updateFrame;#}
+    {#        options.onStart = function () {#}
+    {#            console.log("started");#}
+    {##}
+    {#        }#}
+    {#        options.onStop = function () {#}
+    {#            console.log("stopped");#}
+    {#        }#}
+    {##}
+    {#        self.stream = new module.Stream(options);#}
+    {##}
+    {#        //canvas.addEventListener("click", function () {#}
+    {#        //    if (self.stream.running) {#}
+    {#        //        self.stop();#}
+    {#        // /   } else {#}
+    {#        //        self.start();#}
+    {#        //    }#}
+    {#        //}, false);#}
+    {##}
+    {#        function scaleRect(srcSize, dstSize) {#}
+    {#            var ratio = Math.min(dstSize.width / srcSize.width,#}
+    {#                dstSize.height / srcSize.height);#}
+    {#            var newRect = {#}
+    {#                x: 0, y: 0,#}
+    {#                width: srcSize.width * ratio,#}
+    {#                height: srcSize.height * ratio#}
+    {#            };#}
+    {#            newRect.x = (dstSize.width / 1) - (newRect.width / 1);#}
+    {#            newRect.y = (dstSize.height / 1) - (newRect.height / 1);#}
+    {#            return newRect;#}
+    {#        }#}
+    {##}
+    {#        function updateFrame(img, canvas) {#}
+    {#            // if#}
+    {#            //console.log(canvas);#}
+    {#            //if ($(canvas)[0].hasAttribute('data-random')){#}
+    {#            //    var str =$(canvas).attr('src');#}
+    {#            //    var position = str.indexOf('&timestamp');#}
+    {#            //    var src = str.substring(0, position + 11);#}
+    {#            //    src = src + Date.now();#}
+    {#            //    $(canvas).attr('src', $(canvas).attr('src') + '&timestamp=' + Date.now());#}
+    {#            //}#}
+    {#            //else{#}
+    {#            //    $(canvas).attr('data-random', true);#}
+    {#            //    $(canvas).attr('src', $(canvas).attr('src') + '&timestamp=' + Date.now());#}
+    {##}
+    {#            //}#}
+    {#            var srcRect = {#}
+    {#                x: 0, y: 0,#}
+    {#                width: img.naturalWidth,#}
+    {#                height: img.naturalHeight#}
+    {#            };#}
+    {#            var dstRect = scaleRect(srcRect, {#}
+    {#                width: canvas.width,#}
+    {#                height: canvas.height#}
+    {#            });#}
+    {#            try {#}
+    {#                context.drawImage(img,#}
+    {#                    srcRect.x,#}
+    {#                    srcRect.y,#}
+    {#                    srcRect.width,#}
+    {#                    srcRect.height,#}
+    {#                    dstRect.x,#}
+    {#                    dstRect.y,#}
+    {#                    dstRect.width,#}
+    {#                    dstRect.height#}
+    {#                );#}
+                    {#console.log(".");#}
+    {#            } catch (e) {#}
+    {#                console.log(e);#}
+    {#                clearInterval(self.stream.frameTimer);#}
+    {#                self.start();#}
+    {#                // if we can't draw, don't bother updating anymore#}
+                    {#self.stop();#}
+                    {#console.log("!");#}
+                    {#throw e;#}
+    {#            }#}
+    {#        }#}
+    {##}
+    {#        self.start = function () {#}
+    {#            self.stream.start();#}
+    {#        }#}
+    {#        self.stop = function () {#}
+    {#            self.stream.stop();#}
+    {#        }#}
+    {##}
+    {#    };#}
+    {##}
+    {#    return module;#}
+    {##}
+    {#})(MJPEG || {});#}
+    // $(document).ready(function () {
+    //     var players = $('.video-tab').find('img');
+    //     setInterval(function () {
+    //         ids = [1,4];
+    //         for (el_i in ids) {
+    //             let player = $('.player_' + el_i);
+    //             if ($(player).attr('data-src') != "http://") {
+    //                 if (players[el_i] != undefined) {
+    //                     let src = $(player).attr('data-src');
+
+    //                     let result_src = src.substring(0, src.indexOf('mjpg'));
+    //                     result_src = result_src + 'jpg';
+    //                     var img = new Image();
+    //                     try {
+    //                         img.src = result_src;
+    //                         img.onload = function () {
+    //                             if ($(player).attr('data-load') == "false") {
+    //                                 setTimeout(function(){
+    //                                     $(player).attr('src', src);
+    //                                     $(player).attr('data-load', "true");
+    //                                     $(player).css('width', "100%");
+    //                                 }, 5000);
+
+    //                             } else {
+    //                                 $(player).attr('data-load', "true");
+    //                             }
+    //                         }
+    //                         img.onerror = function () {
+    //                             $(player).attr('data-load', "false");
+    //                             $(player).attr('src', "/media/no_capture.png");
+    //                             $(player).css('width', "50%");
+    //                             $(player).parent().css('text-align', 'center');
+    //                         }
+    //                     } catch (e) {
+    //                         //console.log(e);
+    //                     }
+
+
+    //                 }
+
+
+    //             }
+    //         }
+    //     }, 1000);
+
+    // });
+
+
+</script>
+</body>
+</html>
