@@ -210,8 +210,10 @@ class Event(models.Model):
 
 
 class History(models.Model):
-    history_timestamp = models.DateTimeField('Timestamp', auto_now=True)
 
+    history_timestamp = models.DateTimeField('Timestamp', auto_now=True)
+    attitude_roll = models.FloatField("Attitude roll", blank = True, null = True)
+    heading = models.FloatField("Heading from North", blank = True, null = True)
     # coordinates_lon_verbose = "Долгота"
     # coordinates_lon_verbose_plural = "Долгота"
     coordinates_lon = models.CharField('Долгота', max_length=200)
