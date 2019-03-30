@@ -295,24 +295,6 @@ class TranslationThread(Thread):
                     if nn_required:
                         needLayers = True
                         time_start = time.time()
-                        # # results = model.detect([frame], verbose=1)
-                        # time_detect = time.time()
-                        #
-                        # # r = results[0]
-                        # # frame = display_instances(
-                        # #     frame, r["rois"], r["masks"], r["class_ids"], class_names, r["scores"]
-                        # # )
-                        #
-                        # time_display_instance = time.time()
-                        #
-                        # log("--- Frame detected on %s ---" % title, 'white')
-                        # log("%.2f + %.2f = %.2f" % (time_detect - time_start,
-                        #                             time_display_instance - time_detect,
-                        #                             time_display_instance - time_start), 'white')
-                        # for i in range(len(r["class_ids"])):
-                        #     log("I see \"%s\" with accuracy ~%s on %s" % (
-                        #         str(class_names[r["class_ids"][i]]), str(int(r["scores"][i] * 1000) / 10),
-                        #         title) + "%", 'magenta')
 
                     if telemetry_required:
                         needLayers = True
@@ -336,7 +318,7 @@ class TranslationThread(Thread):
                         y_roll = math.sin(float(history_record.attitude_roll)) * c
                         if font_size == 1 :
                             # cv2.line(frame, (x, y + 1), (int(x + x_roll + 400), int(y + 1 + y_roll)), (255, 255, 255), 5)
-                            cv2.line(frame, (x, y), (int(x + x_roll + 400), int(y + y_roll)), (23, 117, 197), 5)
+                            cv2.line(frame, (x, y), (int(x + x_roll + 400), int(y + y_roll)), (0, 255, 0), 5)
                         else :
                             # cv2.line(frame, (int(w / 2) - 150, int(h / 2 + 1)),
                             #          (int(w / 2) - 150 + int(math.cos(float(history_record.attitude_roll)) * 150 + 150),
@@ -392,13 +374,37 @@ class TranslationThread(Thread):
                         else:
                             fwidth, fheight = logo_small.shape[:2]
                         if w > 500 :
-                            frame[:fwidth, int(bheight / 2 + (fheight / 2)) - fheight:int(bheight / 2 + (fheight / 2))] = logo[:]  # в левый верхний
+                            # frame[:fwidth, int(bheight / 2 + (fheight / 2)) - fheight:int(bheight / 2 + (fheight / 2))] = logo[:]  # в левый верхний
+                            frame[:fwidth, bheight - fheight :] = logo[:]  # в левый верхний
                         else:
                             frame[:fwidth, bheight - fheight :] = logo_small[:]  # в левый верхний
                         # frame[bwidth - fwidth:, :fheight] = logo[:]  # в левый нижний
                         # frame[bwidth - fwidth:, bheight - fheight :] = logo[:]  # в правый нижний
 
                         # ***************************************************************************************************************
+                        # *************************************************** Compass ***************************************************
+                        # Круг
+                        cv2.circle(frame, (int((w / 2) + (w / 3)), int((h / 2) + (h / 3))), int(h / 8), (0, 255, 0), 3)
+                        # Направление обзора
+                        c = int(h / 8)
+                        x = int((w / 2) + (w / 3))
+                        y = int((h / 2) + (h / 3))
+
+                        x_roll = math.cos(float((history_record.heading + 270) * np.pi / 180)) * c
+                        y_roll = math.sin(float((history_record.heading + 270) * np.pi / 180)) * c
+
+                        x_n_roll = math.cos(float(270 * np.pi / 180)) * c
+                        y_n_roll = math.sin(float(270 * np.pi / 180)) * c
+                        Functions.draw_text_on_cv_frame(frame,
+                                                        "N",
+                                                        (int(x + x_n_roll), int(y + y_n_roll)),
+                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
+                                                        [255, 255, 255], 2)
+                        Functions.draw_text_on_cv_frame(frame,
+                                                        "H",
+                                                        (int(x + x_roll), int(y + y_roll)),
+                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
+                                                        [255, 255, 255], 2)
                         streams[title, "img"] = frame
 
 
