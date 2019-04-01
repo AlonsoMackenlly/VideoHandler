@@ -23,24 +23,9 @@ PORT = 15152
 streams = {}
 
 no_image = Image.open("/root/django/control_pane/static/img/noimage.jpg")
-
-logo = cv2.imread("/root/django/media/sokol.png", cv2.IMREAD_UNCHANGED)
-(wH, wW) = logo.shape[:2]
-scale_percent = 60 # percent of original size
-width = int(wW * scale_percent / 100)
-height = int(wH * scale_percent / 100)
-dim = (width, height)
-logo_small = cv2.resize(logo, dim, interpolation = cv2.INTER_AREA)
-(wHs, wWs) = logo_small.shape[:2]
-logo = cv2.resize(logo, dim, interpolation = cv2.INTER_AREA)
-(wH, wW) = logo.shape[:2]
-logo = np.asarray(Image.fromarray(logo).convert("RGBA"))
-# logo = Image.fromarray(logo)
-
-# load the input image, then add an extra dimension to the
-# image (i.e., the alpha transparency)
-# logo_small = cv2.imread("/root/django/media/sokol.png", cv2.IMREAD_UNCHANGED)
-
+logo = cv2.imread("/root/django/media/logotip.png")
+logo_small = cv2.imread("/root/django/media/logotip_small.png")
+# logo = cv2.resize(logo, (450, 120))
 # logo = logo.crop((1,20,50,80))
 #
 # b = io.BytesIO()
@@ -48,26 +33,26 @@ logo = np.asarray(Image.fromarray(logo).convert("RGBA"))
 # logo = cv2.resize(logo, (150, 80))
 
 class Functions:
-    # @staticmethod
-    # def blend_transparent(face_img, overlay_t_img) :
-    #     # Split out the transparency mask from the colour info
-    #     overlay_img = overlay_t_img[:, :, :3]  # Grab the BRG planes
-    #     overlay_mask = overlay_t_img[:, :, 3 :]  # And the alpha plane
-    #
-    #     # Again calculate the inverse mask
-    #     background_mask = 255 - overlay_mask
-    #
-    #     # Turn the masks into three channel, so we can use them as weights
-    #     overlay_mask = cv2.cvtColor(overlay_mask, cv2.COLOR_GRAY2BGR)
-    #     background_mask = cv2.cvtColor(background_mask, cv2.COLOR_GRAY2BGR)
-    #
-    #     # Create a masked out face image, and masked out overlay
-    #     # We convert the images to floating point in range 0.0 - 1.0
-    #     face_part = (face_img * (1 / 255.0)) * (background_mask * (1 / 255.0))
-    #     overlay_part = (overlay_img * (1 / 255.0)) * (overlay_mask * (1 / 255.0))
-    #
-    #     # And finally just add them together, and rescale it back to an 8bit integer image
-    #     return np.uint8(cv2.addWeighted(face_part, 255.0, overlay_part, 255.0, 0.0))
+    @staticmethod
+    def blend_transparent(face_img, overlay_t_img) :
+        # Split out the transparency mask from the colour info
+        # overlay_img = overlay_t_img[:, :, :3]  # Grab the BRG planes
+        # overlay_mask = overlay_t_img[:, :, 3:]  # And the alpha plane
+        #
+        # # Again calculate the inverse mask
+        # background_mask = 255 - overlay_mask
+        #
+        # # Turn the masks into three channel, so we can use them as weights
+        # overlay_mask = cv2.cvtColor(overlay_mask, cv2.COLOR_GRAY2BGR)
+        # background_mask = cv2.cvtColor(background_mask, cv2.COLOR_GRAY2BGR)
+        #
+        # # Create a masked out face image, and masked out overlay
+        # # We convert the images to floating point in range 0.0 - 1.0
+        # face_part = (face_img * (1 / 255.0)) * (background_mask * (1 / 255.0))
+        # overlay_part = (overlay_img * (1 / 255.0)) * (overlay_mask * (1 / 255.0))
+
+        # And finally just add them together, and rescale it back to an 8bit integer image
+        return np.uint8(cv2.addWeighted(face_img, 255.0, overlay_t_img, 255.0, 0.0))
 
 
     @staticmethod
@@ -323,7 +308,7 @@ class TranslationThread(Thread):
                         except Exception as e:
                             history_record = History.objects.filter(
                                 drone_id = Drone.objects.get(camera_thermal_id = self.stream.id).id).last()
-                            font_size = 0.2
+                            font_size = 0.5
 
                         # ********************************* Горизонтальная линия под углом ********************************************
                         c = 400
@@ -382,94 +367,26 @@ class TranslationThread(Thread):
                                                         [255, 255, 255], 2)
                         # **************************************************************************************************************
                         # **********************************************  Логотип ******************************************************
-                        def overlay_image_alpha(img, img_overlay, pos, alpha_mask):
-                            """Overlay img_overlay on top of img at the position specified by
-                            pos and blend using alpha_mask.
 
-                            Alpha mask must contain values within the range [0, 1] and be the
-                            same size as img_overlay.
-                            """
-
-                            x, y = pos
-
-                            # Image ranges
-                            y1, y2 = max(0, y), min(img.shape[0], y + img_overlay.shape[0])
-                            x1, x2 = max(0, x), min(img.shape[1], x + img_overlay.shape[1])
-
-                            # Overlay ranges
-                            y1o, y2o = max(0, -y), min(img_overlay.shape[0], img.shape[0] - y)
-                            x1o, x2o = max(0, -x), min(img_overlay.shape[1], img.shape[1] - x)
-
-                            # Exit if nothing to do
-                            if y1 >= y2 or x1 >= x2 or y1o >= y2o or x1o >= x2o:
-                                return
-
-                            channels = img.shape[2]
-
-                            alpha = alpha_mask[y1o:y2o, x1o:x2o]
-                            alpha_inv = 1.0 - alpha
-
-                            for c in range(channels):
-                                img[y1:y2, x1:x2, c] = (alpha * img_overlay[y1o:y2o, x1o:x2o, c] +
-                                                        alpha_inv * img[y1:y2, x1:x2, c])
-                            return img
-
-
-                        if font_size == 1:
-                            frame = overlay_image_alpha(frame, logo, (int((w / 2) - (wW / 2)), 0), logo[:, :, 3] / 255.0)
+                        bwidth, bheight = frame.shape[:2]
+                        if w > 500:
+                            fwidth, fheight = logo.shape[:2]
                         else:
-                            frame = overlay_image_alpha(frame, logo_small, (int((w / 2) - (wWs / 2)), 0), logo[:, :, 3] / 255.0)
-
-
-                        # scale = 1
-                        # backgroundImage = frame
-                        # global logo
-                        # logo = cv2.resize(np.uint8(np.asarray(logo)), (0, 0), fx=scale, fy=scale)
-                        # logo = np.uint8(np.asarray(logo))
-                        # # logo = cv2.resize(logo, (0, 0), fx=scale, fy=scale)
-                        # hHH, wWW, _ = logo.shape  # Size of foreground
-                        # pos = (int((w / 2) - (wWW / 2)), 0)
-                        # rows, cols, _ = backgroundImage.shape  # Size of background Image
-                        # y, x = pos[0], pos[1]  # Position of foreground/overlayImage image
-                        #
-                        # # loop over all pixels and apply the blending equation
-                        # for i in range(hHH):
-                        #     for j in range(wWW):
-                        #         if x + i >= rows or y + j >= cols:
-                        #             continue
-                        #         alpha = float(logo[i][j][2] / 255.0)  # read the alpha channel
-                        #         backgroundImage[x + i][y + j] = alpha * logo[i][j][:1] + (1 - alpha) * \
-                        #                                         backgroundImage[x + i][y + j]
-                        # frame = backgroundImage
-
-
-
-
-
-                        # bwidth, bheight = frame.shape[:2]
-                        # if w > 500:
-                        #     fwidth, fheight = logo.shape[:2]
-                        # else:
-                        #     fwidth, fheight = logo_small.shape[:2]
-                        # if w > 500 :
-                        #     # frame[:fwidth, int(bheight / 2 + (fheight / 2)) - fheight:int(bheight / 2 + (fheight / 2))] = logo[:]  # в левый верхний
-                        #     frame[:fwidth, bheight - fheight :] = logo[:]  # в левый верхний
-                        # else:
-                        #     frame[:fwidth, bheight - fheight :] = logo_small[:]  # в левый верхний
+                            fwidth, fheight = logo_small.shape[:2]
+                        if w > 500 :
+                            # frame[:fwidth, int(bheight / 2 + (fheight / 2)) - fheight:int(bheight / 2 + (fheight / 2))] = logo[:]  # в левый верхний
+                            frame[:fwidth, bheight - fheight :] = logo[:]  # в левый верхний
+                        else:
+                            frame[:fwidth, bheight - fheight :] = logo_small[:]  # в левый верхний
                         # frame[bwidth - fwidth:, :fheight] = logo[:]  # в левый нижний
                         # frame[bwidth - fwidth:, bheight - fheight :] = logo[:]  # в правый нижний
 
                         # ***************************************************************************************************************
                         # *************************************************** Compass ***************************************************
                         # Круг
-                        cv2.circle(frame, (int((w / 2) + (w / 3)), int((h / 2) + (h / 3))), int(h / 9),
-                                   (255, 255, 255), 6)
-                        cv2.circle(frame, (int((w / 2) + (w / 3)), int((h / 2) + (h / 3))), int(h / 10),
-                                       (50, 0, 255), 6)
-
-
+                        cv2.circle(frame, (int((w / 2) + (w / 3)), int((h / 2) + (h / 3))), int(h / 8), (0, 255, 0), 3)
                         # Направление обзора
-                        c = int(h / 10)
+                        c = int(h / 8)
                         x = int((w / 2) + (w / 3))
                         y = int((h / 2) + (h / 3))
 
@@ -478,44 +395,16 @@ class TranslationThread(Thread):
 
                         x_n_roll = math.cos(float(270 * np.pi / 180)) * c
                         y_n_roll = math.sin(float(270 * np.pi / 180)) * c
-
-                        x_s_roll = math.cos(float(450 * np.pi / 180)) * c
-                        y_s_roll = math.sin(float(450 * np.pi / 180)) * c
-
-                        x_s_roll = math.cos(float(450 * np.pi / 180)) * c
-                        y_s_roll = math.sin(float(450 * np.pi / 180)) * c
-
-                        x_w_roll = math.cos(float(540 * np.pi / 180)) * c
-                        y_w_roll = math.sin(float(540 * np.pi / 180)) * c
-
-                        x_e_roll = math.cos(float(360 * np.pi / 180)) * c
-                        y_e_roll = math.sin(float(360 * np.pi / 180)) * c
-
                         Functions.draw_text_on_cv_frame(frame,
                                                         "N",
                                                         (int(x + x_n_roll), int(y + y_n_roll)),
                                                         cv2.FONT_HERSHEY_SIMPLEX, font_size,
                                                         [255, 255, 255], 2)
                         Functions.draw_text_on_cv_frame(frame,
-                                                        "S",
-                                                        (int(x + x_s_roll), int(y + y_s_roll)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], 2)
-                        Functions.draw_text_on_cv_frame(frame,
-                                                        "W",
-                                                        (int(x + x_w_roll), int(y + y_w_roll)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], 2)
-                        Functions.draw_text_on_cv_frame(frame,
-                                                        "E",
-                                                        (int(x + x_e_roll), int(y + y_e_roll)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], 2)
-                        Functions.draw_text_on_cv_frame(frame,
-                                                        "^",
+                                                        "H",
                                                         (int(x + x_roll), int(y + y_roll)),
                                                         cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [0, 255, 0], 3)
+                                                        [255, 255, 255], 2)
                         streams[title, "img"] = frame
 
 
