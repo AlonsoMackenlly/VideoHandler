@@ -102,8 +102,10 @@ class service():
                                          battery_level=data.battery.level,
                                          gps_fixed=data.gps_0.satellites_visible,
                                          outer_id=id,
-                                         event_id = 1,
-                                         drone_id=copter_id)
+                                         event_id = 2,
+                                         drone_id=copter_id,
+                                         attitude_roll=data.attitude.roll,
+                                         heading=data.heading)
                         record.save()
                         record = History.objects.last()
                         record.uid = "history_" + str(record.id)
@@ -473,6 +475,7 @@ class DroneThread(Thread):
             try:
                 # connection_string = "udpout:10.8.0.101:14550"
                 self.vehicle = dronekit.connect(self.drone.connection_string, wait_ready=True)# dronekit.connect(self.drone.connection_string, wait_ready=False)
+                # print(self.vehicle.attitude.roll)
                 sign.stop_sign = False
                 PilotControll.vehicle = self.vehicle
                 self.drone.connected = True
