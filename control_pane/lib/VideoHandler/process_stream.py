@@ -7,7 +7,6 @@ import numpy as np
 import math
 import cv2
 import io
-import os
 import tornado.escape
 import tornado.gen
 import tornado.ioloop
@@ -26,10 +25,8 @@ no_image = Image.open("/root/django/control_pane/static/img/noimage.jpg")
 
 logo = cv2.imread("/root/django/media/sokol.png", cv2.IMREAD_UNCHANGED)
 (wH, wW) = logo.shape[:2]
-scale_percent = 60  # percent of original size
-width = int(wW * scale_percent / 100)
-height = int(wH * scale_percent / 100)
-dim = (width, height)
+dim = (int(wW * 0.6), int(wH * 0.6))
+
 # logo_small = cv2.resize(logo, dim, interpolation=cv2.INTER_AREA)
 logo_small = cv2.resize(logo, (0, 0), fx=0.25, fy=0.25)
 
@@ -38,18 +35,6 @@ logo = cv2.resize(logo, dim, interpolation=cv2.INTER_AREA)
 (wH, wW) = logo.shape[:2]
 logo = np.asarray(Image.fromarray(logo).convert("RGBA"))
 
-
-# logo = Image.fromarray(logo)
-
-# load the input image, then add an extra dimension to the
-# image (i.e., the alpha transparency)
-# logo_small = cv2.imread("/root/django/media/sokol.png", cv2.IMREAD_UNCHANGED)
-
-# logo = logo.crop((1,20,50,80))
-#
-# b = io.BytesIO()
-# logo.save(b,format="jpeg")
-# logo = cv2.resize(logo, (150, 80))
 
 class Functions:
     # @staticmethod
@@ -74,17 +59,17 @@ class Functions:
     #     return np.uint8(cv2.addWeighted(face_part, 255.0, overlay_part, 255.0, 0.0))
 
     @staticmethod
-    def threadChecker(thr, stream_id):
+    def thread_checker(thr, stream_id):
         while True:
-            if thr.stop_trigger == False:
+            if not thr.stop_trigger:
                 time.sleep(1)
             else:
                 stream_object = Stream.objects.get(id=stream_id)
                 TranslationThread(stream_object)
 
     @staticmethod
-    def updateStreamStatus(id, title, status):
-        stream = Stream.objects.filter(id=id).last()
+    def update_stream_status(stream_id, title, status):
+        stream = Stream.objects.filter(id=stream_id).last()
         if stream is not None:
             stream.status = status
             stream.save(update_fields=['status'])
@@ -93,27 +78,25 @@ class Functions:
 
     @staticmethod
     def draw_text_on_cv_frame(frame, text, position, font, font_size, color, line_size, delta_line=5):
-        # print(type(streams[title, "img"]))
         cv2.putText(np.asarray(frame), text, position, font, font_size, [0, 0, 0], line_size + delta_line)
         cv2.putText(np.asarray(frame), text, position, font, font_size, color, line_size)
-        # return frame
 
     @staticmethod
-    def write_header(tornadoself):
-        tornadoself.set_header("Access-Control-Allow-Origin", "*")
-        tornadoself.set_header("Access-Control-Allow-Headers", "*")
-        tornadoself.set_header("Access-Control-Allow-Methods", "*")
-        tornadoself.set_header("Access-Control-Allow-Credentials", "true")
+    def write_header(tornado_self):
+        tornado_self.set_header("Access-Control-Allow-Origin", "*")
+        tornado_self.set_header("Access-Control-Allow-Headers", "*")
+        tornado_self.set_header("Access-Control-Allow-Methods", "*")
+        tornado_self.set_header("Access-Control-Allow-Credentials", "true")
 
-        tornadoself.set_header("Cache-Control",
-                               "no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0")
-        tornadoself.set_header("Connection", "close")
-        tornadoself.set_header("Content-Type", "multipart/x-mixed-replace;boundary=--boundarydonotcross")
-        tornadoself.set_header("Expires", "Mon, 3 Jan 2000 12:34:56 GMT")
-        tornadoself.set_header("Pragma", "no-cache")
+        tornado_self.set_header("Cache-Control",
+                                "no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0")
+        tornado_self.set_header("Connection", "close")
+        tornado_self.set_header("Content-Type", "multipart/x-mixed-replace;boundary=--boundarydonotcross")
+        tornado_self.set_header("Expires", "Mon, 3 Jan 2000 12:34:56 GMT")
+        tornado_self.set_header("Pragma", "no-cache")
 
     @staticmethod
-    def write_image(tornadoself, title):
+    def write_image(tornado_self, title):
         o = io.BytesIO()
         try:
             img = Image.fromarray(streams[title, "img"])
@@ -125,10 +108,10 @@ class Functions:
 
         s = o.getvalue()
 
-        tornadoself.write("--boundarydonotcross\n")
-        tornadoself.write("Content-type: image/jpeg\r\n")
-        tornadoself.write("Content-length: %s\r\n\r\n" % len(s))
-        tornadoself.write(s)
+        tornado_self.write("--boundarydonotcross\n")
+        tornado_self.write("Content-type: image/jpeg\r\n")
+        tornado_self.write("Content-length: %s\r\n\r\n" % len(s))
+        tornado_self.write(s)
 
     @staticmethod
     def write_status(tornadoself, message, status="info"):
@@ -176,7 +159,7 @@ class StreamControl:
 
             thread = TranslationThread(stream_object)
             thread.start()
-            thread = Thread(target=Functions.threadChecker, args=(thread, stream_object.id,),
+            thread = Thread(target=Functions.thread_checker, args=(thread, stream_object.id,),
                             name="thread-checker-%s" % title)
             thread.start()
 
@@ -290,7 +273,7 @@ class TranslationThread(Thread):
             h = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
             w = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
             fps = int(capture.get(cv2.CAP_PROP_FPS))
-            time.sleep(1)
+            time.sleep(5)
         nn_required = self.stream.nn_required
         telemetry_required = self.stream.telemetry_required
         self.stream.width = w
@@ -308,12 +291,12 @@ class TranslationThread(Thread):
                     break
                 if ret:
                     last_packet = time.time()
-                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  #######################################
-                    needLayers = False
+                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # ######################################
+                    need_layers = False
                     # log("--- Frame retranslated on %s ---" % title, 'white')
                     if nn_required:
-                        needLayers = True
-                        time_start = time.time()
+                        need_layers = True
+                        # time_start = time.time()
 
                     if telemetry_required:
                         # Коэффициент перевода текста и графики в более приятный вид для низких разрешений
@@ -322,12 +305,11 @@ class TranslationThread(Thread):
                         elif w <= 1920:
                             k = 1
                         else:
-                            k = 0.5
+                            k = 0.7
 
-                        needLayers = True
+                        need_layers = True
                         align = h / 11
                         current_align = align
-                        left_align = 20
                         try:
                             history_record = History.objects.filter(
                                 drone_id=Drone.objects.get(camera_color_id=self.stream.id).id).last()
@@ -335,7 +317,9 @@ class TranslationThread(Thread):
                             history_record = History.objects.filter(
                                 drone_id=Drone.objects.get(camera_thermal_id=self.stream.id).id).last()
 
-                        # ********************************* Горизонтальная линия под углом ********************************************
+                        ''' 
+                        ****************************** Горизонтальная линия под углом ******************************
+                        '''
                         c = 250 / k ** k
                         x = int(w / 2 - c)
                         y = int(h / 2)
@@ -345,34 +329,33 @@ class TranslationThread(Thread):
                         cv2.line(frame, (x, y), (int(x + x_roll + c), int(y + y_roll)), (207, 107, 70), int(8 / k ** k))
                         cv2.circle(frame, (int(w / 2), int(h / 2)), int(c + 50 / k ** k), (188, 188, 188), int(2 / k),
                                    lineType=8)
-                        # **************************************************************************************************************
-                        # ************************************************* Телеметрия *************************************************
+
+                        ''' 
+                        ****************************** Телеметрия ******************************
+                        '''
                         font_size = 0.7 / k
                         line_size = int(2 / k)
                         delta_line = int(5 / k)
 
                         Functions.draw_text_on_cv_frame(frame, self.name, (int(20 / k), int(30 / k)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX,
-                                                        font_size,
-                                                        [255, 255, 255], line_size, delta_line)
+                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size, [255, 255, 255], line_size,
+                                                        delta_line)
                         text = str(datetime.datetime.now().strftime("%Y.%m.%d %H:%M:%S"))
                         Functions.draw_text_on_cv_frame(frame, text, (int(150 / k), int(30 / k)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX,
-                                                        font_size,
-                                                        [255, 255, 255], line_size, delta_line)
+                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size, [255, 255, 255], line_size,
+                                                        delta_line)
                         Functions.draw_text_on_cv_frame(frame, "Status: " + str(history_record.status),
-                                                        (int(w - 200 / k), int(30 / k)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], line_size, delta_line)
+                                                        (int(w - 200 / k), int(30 / k)), cv2.FONT_HERSHEY_SIMPLEX,
+                                                        font_size, [255, 255, 255], line_size, delta_line)
                         current_align += align
 
                         Functions.draw_text_on_cv_frame(frame,
                                                         "Lat: " + str(history_record.coordinates_lat) + ", Lon: " + str(
                                                             history_record.coordinates_lon) + ", Altitude : " + str(
                                                             history_record.coordinates_alt),
-                                                        (int(20 / k), int(h - 50 / k)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], line_size, delta_line)
+                                                        (int(20 / k), int(h - 50 / k)), cv2.FONT_HERSHEY_SIMPLEX,
+                                                        font_size, [255, 255, 255], line_size, delta_line)
+
                         Functions.draw_text_on_cv_frame(frame, "Speed: " + str(
                             history_record.ground_speed) + "; Battery: " + str(
                             history_record.battery_voltage) + "V" + ", " + str(
@@ -382,8 +365,11 @@ class TranslationThread(Thread):
                                                         cv2.FONT_HERSHEY_SIMPLEX, font_size,
                                                         [255, 255, 255], line_size, delta_line)
 
-                        # **************************************************************************************************************
-                        # **********************************************  Логотип ******************************************************
+                        ''' 
+                        ****************************** Логотип ******************************
+                        '''
+
+                        # Можно ли это вынести наверх в методы класса?
                         def overlay_image_alpha(img, img_overlay, pos, alpha_mask):
                             """Overlay img_overlay on top of img at the position specified by
                             pos and blend using alpha_mask.
@@ -392,15 +378,15 @@ class TranslationThread(Thread):
                             same size as img_overlay.
                             """
 
-                            x, y = pos
+                            _x, _y = pos
 
                             # Image ranges
-                            y1, y2 = max(0, y), min(img.shape[0], y + img_overlay.shape[0])
-                            x1, x2 = max(0, x), min(img.shape[1], x + img_overlay.shape[1])
+                            y1, y2 = max(0, _y), min(img.shape[0], _y + img_overlay.shape[0])
+                            x1, x2 = max(0, _x), min(img.shape[1], _x + img_overlay.shape[1])
 
                             # Overlay ranges
-                            y1o, y2o = max(0, -y), min(img_overlay.shape[0], img.shape[0] - y)
-                            x1o, x2o = max(0, -x), min(img_overlay.shape[1], img.shape[1] - x)
+                            y1o, y2o = max(0, -_y), min(img_overlay.shape[0], img.shape[0] - _y)
+                            x1o, x2o = max(0, -_x), min(img_overlay.shape[1], img.shape[1] - _x)
 
                             # Exit if nothing to do
                             if y1 >= y2 or x1 >= x2 or y1o >= y2o or x1o >= x2o:
@@ -411,9 +397,9 @@ class TranslationThread(Thread):
                             alpha = alpha_mask[y1o:y2o, x1o:x2o]
                             alpha_inv = 1.0 - alpha
 
-                            for c in range(channels):
-                                img[y1:y2, x1:x2, c] = (alpha * img_overlay[y1o:y2o, x1o:x2o, c] +
-                                                        alpha_inv * img[y1:y2, x1:x2, c])
+                            for channel in range(channels):
+                                img[y1:y2, x1:x2, channel] = (alpha * img_overlay[y1o:y2o, x1o:x2o, channel] +
+                                                              alpha_inv * img[y1:y2, x1:x2, channel])
                             return img
 
                         if k == 1:
@@ -450,15 +436,17 @@ class TranslationThread(Thread):
                         # else:
                         #     fwidth, fheight = logo_small.shape[:2]
                         # if w > 500 :
-                        #     # frame[:fwidth, int(bheight / 2 + (fheight / 2)) - fheight:int(bheight / 2 + (fheight / 2))] = logo[:]  # в левый верхний
+                        #     # frame[:fwidth, int(bheight / 2 + (fheight / 2)) - fheight:int(bheight / 2 +
+                        #     (fheight / 2))] = logo[:]  # в левый верхний
                         #     frame[:fwidth, bheight - fheight :] = logo[:]  # в левый верхний
                         # else:
                         #     frame[:fwidth, bheight - fheight :] = logo_small[:]  # в левый верхний
                         # frame[bwidth - fwidth:, :fheight] = logo[:]  # в левый нижний
                         # frame[bwidth - fwidth:, bheight - fheight :] = logo[:]  # в правый нижний
 
-                        # ***************************************************************************************************************
-                        # *************************************************** Compass ***************************************************
+                        ''' 
+                        ****************************** Компас ******************************
+                        '''
                         # Круг
                         cv2.circle(frame, (int((w / 2) + (w / 2.5)), int((h / 2) + (h / 3))), int(h / 9),
                                    (255, 255, 255), 6)
@@ -486,36 +474,24 @@ class TranslationThread(Thread):
                         x_e_roll = math.cos(float(360 * np.pi / 180)) * c - 3
                         y_e_roll = math.sin(float(360 * np.pi / 180)) * c + 3
 
-                        Functions.draw_text_on_cv_frame(frame,
-                                                        "N",
-                                                        (int(x + x_n_roll), int(y + y_n_roll)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], line_size, delta_line)
-                        Functions.draw_text_on_cv_frame(frame,
-                                                        "S",
-                                                        (int(x + x_s_roll), int(y + y_s_roll)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], line_size, delta_line)
-                        Functions.draw_text_on_cv_frame(frame,
-                                                        "W",
-                                                        (int(x + x_w_roll), int(y + y_w_roll)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], line_size, delta_line)
-                        Functions.draw_text_on_cv_frame(frame,
-                                                        "E",
-                                                        (int(x + x_e_roll), int(y + y_e_roll)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], line_size, delta_line)
-                        Functions.draw_text_on_cv_frame(frame,
-                                                        "^",
-                                                        (int(x + x_roll), int(y + y_roll)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [0, 255, 0], line_size + 1, delta_line)
+                        Functions.draw_text_on_cv_frame(frame, "N", (int(x + x_n_roll), int(y + y_n_roll)),
+                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size, [255, 255, 255], line_size,
+                                                        delta_line)
+                        Functions.draw_text_on_cv_frame(frame, "S", (int(x + x_s_roll), int(y + y_s_roll)),
+                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size, [255, 255, 255], line_size,
+                                                        delta_line)
+                        Functions.draw_text_on_cv_frame(frame, "W", (int(x + x_w_roll), int(y + y_w_roll)),
+                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size, [255, 255, 255], line_size,
+                                                        delta_line)
+                        Functions.draw_text_on_cv_frame(frame, "E", (int(x + x_e_roll), int(y + y_e_roll)),
+                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size, [255, 255, 255], line_size,
+                                                        delta_line)
+                        Functions.draw_text_on_cv_frame(frame, "^", (int(x + x_roll), int(y + y_roll)),
+                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size, [0, 255, 0], line_size + 1,
+                                                        delta_line)
                         streams[title, "img"] = frame
 
-                    # Functions.overlay_transparent(np.uint8(np.asarray(frame)), np.uint8(np.asarray(logo)), w / 2, h / 2, w, h)
-
-                    if needLayers == False:
+                    if not need_layers:
                         streams[title, "img"] = frame
 
                     # /tmp/streams/{title}
@@ -546,13 +522,13 @@ class APIHandler(tornado.web.RequestHandler):
         ilog("action - %s, title - %s, obj - %s" % (action, title, obj))
 
         if action == "start":
-            Functions.updateStreamStatus(stream_id, title, True)
+            Functions.update_stream_status(stream_id, title, True)
             Functions.write_status(self, StreamControl.start_thread(title))
         elif action == "stop":
-            Functions.updateStreamStatus(stream_id, title, False)
+            Functions.update_stream_status(stream_id, title, False)
             Functions.write_status(self, StreamControl.stop_thread(title))
         elif action == "restart":
-            Functions.updateStreamStatus(stream_id, title, True)
+            Functions.update_stream_status(stream_id, title, True)
             Functions.write_status(self, StreamControl.restart_thread(title))
         elif action == "start-all":
             Functions.write_status(self, StreamControl.start_threads())
@@ -582,12 +558,12 @@ class APIHandler(tornado.web.RequestHandler):
                 Functions.write_status(self, "Stream %s successfully deleted" % title)
             else:
                 log("Stream with title %s does not exist" % title, "red")
-                Functions.write_status("Stream with title %s does not exist" % title)
+                Functions.write_status(self, "Stream with title %s does not exist" % title)
 
         elif action == "update":
             json_parsed = json.loads(obj)
             stream = Stream.objects.filter(id=stream_id).last()
-            if stream != None:
+            if stream is not None:
                 stream.stream_in = json_parsed['stream_in']
                 stream.uid = json_parsed['uid']
                 stream.protocol = json_parsed['protocol']
@@ -628,9 +604,9 @@ class MJPEGXeomaHandler(tornado.web.RequestHandler):
         title = self.get_argument("title", None)
         self.served_image_timestamp = time.time()
         log(self.request, 'cyan')
-        last_image = ""
         while True:
             interval = 0.1
+            # Почему это здесь, если есть метод write_image ? Зачем нужен интвервал?
             if self.served_image_timestamp + interval < time.time():
                 o = io.BytesIO()
                 try:
@@ -695,7 +671,6 @@ def run_server():
 
 def log(text, color="white"):
     if LOGGING:
-        status = None
         if color == "cyan" or color == "white":
             status = "ALL"
         elif color == "magenta" or color == "blue":
