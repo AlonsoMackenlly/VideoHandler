@@ -23,9 +23,28 @@ PORT = 15152
 streams = {}
 
 no_image = Image.open("/root/django/control_pane/static/img/noimage.jpg")
-logo = cv2.imread("/root/django/media/logotip.png")
-logo_small = cv2.imread("/root/django/media/logotip_small.png")
-# logo = cv2.resize(logo, (450, 120))
+
+logo = cv2.imread("/root/django/media/sokol.png", cv2.IMREAD_UNCHANGED)
+(wH, wW) = logo.shape[:2]
+scale_percent = 60  # percent of original size
+width = int(wW * scale_percent / 100)
+height = int(wH * scale_percent / 100)
+dim = (width, height)
+# logo_small = cv2.resize(logo, dim, interpolation=cv2.INTER_AREA)
+logo_small = cv2.resize(logo, (0, 0), fx=0.25, fy=0.25)
+
+(wHs, wWs) = logo_small.shape[:2]
+logo = cv2.resize(logo, dim, interpolation=cv2.INTER_AREA)
+(wH, wW) = logo.shape[:2]
+logo = np.asarray(Image.fromarray(logo).convert("RGBA"))
+
+
+# logo = Image.fromarray(logo)
+
+# load the input image, then add an extra dimension to the
+# image (i.e., the alpha transparency)
+# logo_small = cv2.imread("/root/django/media/sokol.png", cv2.IMREAD_UNCHANGED)
+
 # logo = logo.crop((1,20,50,80))
 #
 # b = io.BytesIO()
@@ -33,27 +52,26 @@ logo_small = cv2.imread("/root/django/media/logotip_small.png")
 # logo = cv2.resize(logo, (150, 80))
 
 class Functions:
-    @staticmethod
-    def blend_transparent(face_img, overlay_t_img) :
-        # Split out the transparency mask from the colour info
-        # overlay_img = overlay_t_img[:, :, :3]  # Grab the BRG planes
-        # overlay_mask = overlay_t_img[:, :, 3:]  # And the alpha plane
-        #
-        # # Again calculate the inverse mask
-        # background_mask = 255 - overlay_mask
-        #
-        # # Turn the masks into three channel, so we can use them as weights
-        # overlay_mask = cv2.cvtColor(overlay_mask, cv2.COLOR_GRAY2BGR)
-        # background_mask = cv2.cvtColor(background_mask, cv2.COLOR_GRAY2BGR)
-        #
-        # # Create a masked out face image, and masked out overlay
-        # # We convert the images to floating point in range 0.0 - 1.0
-        # face_part = (face_img * (1 / 255.0)) * (background_mask * (1 / 255.0))
-        # overlay_part = (overlay_img * (1 / 255.0)) * (overlay_mask * (1 / 255.0))
-
-        # And finally just add them together, and rescale it back to an 8bit integer image
-        return np.uint8(cv2.addWeighted(face_img, 255.0, overlay_t_img, 255.0, 0.0))
-
+    # @staticmethod
+    # def blend_transparent(face_img, overlay_t_img) :
+    #     # Split out the transparency mask from the colour info
+    #     overlay_img = overlay_t_img[:, :, :3]  # Grab the BRG planes
+    #     overlay_mask = overlay_t_img[:, :, 3 :]  # And the alpha plane
+    #
+    #     # Again calculate the inverse mask
+    #     background_mask = 255 - overlay_mask
+    #
+    #     # Turn the masks into three channel, so we can use them as weights
+    #     overlay_mask = cv2.cvtColor(overlay_mask, cv2.COLOR_GRAY2BGR)
+    #     background_mask = cv2.cvtColor(background_mask, cv2.COLOR_GRAY2BGR)
+    #
+    #     # Create a masked out face image, and masked out overlay
+    #     # We convert the images to floating point in range 0.0 - 1.0
+    #     face_part = (face_img * (1 / 255.0)) * (background_mask * (1 / 255.0))
+    #     overlay_part = (overlay_img * (1 / 255.0)) * (overlay_mask * (1 / 255.0))
+    #
+    #     # And finally just add them together, and rescale it back to an 8bit integer image
+    #     return np.uint8(cv2.addWeighted(face_part, 255.0, overlay_part, 255.0, 0.0))
 
     @staticmethod
     def threadChecker(thr, stream_id):
@@ -63,8 +81,6 @@ class Functions:
             else:
                 stream_object = Stream.objects.get(id=stream_id)
                 TranslationThread(stream_object)
-
-
 
     @staticmethod
     def updateStreamStatus(id, title, status):
@@ -76,9 +92,9 @@ class Functions:
             log("stream status with title = %s not saved" % title, "red")
 
     @staticmethod
-    def draw_text_on_cv_frame(frame, text, position, font, font_size, color, line_size):
+    def draw_text_on_cv_frame(frame, text, position, font, font_size, color, line_size, delta_line=5):
         # print(type(streams[title, "img"]))
-        cv2.putText(np.asarray(frame), text, position, font, font_size, [0, 0, 0], line_size + 5)
+        cv2.putText(np.asarray(frame), text, position, font, font_size, [0, 0, 0], line_size + delta_line)
         cv2.putText(np.asarray(frame), text, position, font, font_size, color, line_size)
         # return frame
 
@@ -160,7 +176,8 @@ class StreamControl:
 
             thread = TranslationThread(stream_object)
             thread.start()
-            thread = Thread(target=Functions.threadChecker, args=(thread, stream_object.id,), name="thread-checker-%s" % title)
+            thread = Thread(target=Functions.threadChecker, args=(thread, stream_object.id,),
+                            name="thread-checker-%s" % title)
             thread.start()
 
             msg = "Thread %s is successfully started" % title
@@ -254,12 +271,14 @@ class StreamControl:
             log(msg, "red")
             return msg
 
+
 class TranslationThread(Thread):
     def __init__(self, stream, *args, **kwargs):
         Thread.__init__(self, *args, **kwargs)
         self.name = stream.title
         self.stream = stream
         self.stop_trigger = False
+
     def run(self):
         title = self.stream.title
         capture = cv2.VideoCapture(self.stream.stream_in)
@@ -271,7 +290,7 @@ class TranslationThread(Thread):
             h = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
             w = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
             fps = int(capture.get(cv2.CAP_PROP_FPS))
-            time.sleep(1);
+            time.sleep(1)
         nn_required = self.stream.nn_required
         telemetry_required = self.stream.telemetry_required
         self.stream.width = w
@@ -297,117 +316,202 @@ class TranslationThread(Thread):
                         time_start = time.time()
 
                     if telemetry_required:
+                        # Коэффициент перевода текста и графики в более приятный вид для низких разрешений
+                        if w <= 1024:
+                            k = 2
+                        elif w <= 1920:
+                            k = 1
+                        else:
+                            k = 0.5
+
                         needLayers = True
-                        text = str(datetime.datetime.now().strftime("%Y.%m.%d %H:%M:%S"))
-                        align = h / 9
+                        align = h / 11
                         current_align = align
                         left_align = 20
-                        font_size = 1
                         try:
-                            history_record = History.objects.filter(drone_id = Drone.objects.get(camera_color_id=self.stream.id).id).last()
+                            history_record = History.objects.filter(
+                                drone_id=Drone.objects.get(camera_color_id=self.stream.id).id).last()
                         except Exception as e:
                             history_record = History.objects.filter(
-                                drone_id = Drone.objects.get(camera_thermal_id = self.stream.id).id).last()
-                            font_size = 0.5
+                                drone_id=Drone.objects.get(camera_thermal_id=self.stream.id).id).last()
 
                         # ********************************* Горизонтальная линия под углом ********************************************
-                        c = 400
-                        x = int(w / 2) - 400
+                        c = 250 / k ** k
+                        x = int(w / 2 - c)
                         y = int(h / 2)
                         x_roll = math.cos(float(history_record.attitude_roll)) * c
                         y_roll = math.sin(float(history_record.attitude_roll)) * c
-                        if font_size == 1 :
-                            # cv2.line(frame, (x, y + 1), (int(x + x_roll + 400), int(y + 1 + y_roll)), (255, 255, 255), 5)
-                            cv2.line(frame, (x, y), (int(x + x_roll + 400), int(y + y_roll)), (0, 255, 0), 5)
-                        else :
-                            # cv2.line(frame, (int(w / 2) - 150, int(h / 2 + 1)),
-                            #          (int(w / 2) - 150 + int(math.cos(float(history_record.attitude_roll)) * 150 + 150),
-                            #           int(h / 2 + int(math.sin(float(history_record.attitude_roll)) * 150) + 1)),
-                            #          (255, 255, 255), 5)
-                            cv2.line(frame, (int(w / 2) - 100, int(h / 2)),
-                                     (int(w / 2) - 100 + int(math.cos(float(history_record.attitude_roll)) * 100 + 100),
-                                      int(h / 2 + int(math.sin(float(history_record.attitude_roll)) * 100))),
-                                     (23, 117, 197), 5)
+
+                        cv2.line(frame, (x, y), (int(x + x_roll + c), int(y + y_roll)), (207, 107, 70), int(8 / k ** k))
+                        cv2.circle(frame, (int(w / 2), int(h / 2)), int(c + 50 / k ** k), (188, 188, 188), int(2 / k),
+                                   lineType=8)
                         # **************************************************************************************************************
                         # ************************************************* Телеметрия *************************************************
-                        Functions.draw_text_on_cv_frame(frame, text, (int(left_align), int(current_align)), cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], 2)
-                        current_align += align
-                        Functions.draw_text_on_cv_frame(frame, "Last heartbeat: " + str(history_record.last_heartbeat),
-                                                        (int(left_align), int(current_align)),
+                        font_size = 0.7 / k
+                        line_size = int(2 / k)
+                        delta_line = int(5 / k)
+
+                        Functions.draw_text_on_cv_frame(frame, self.name, (int(20 / k), int(30 / k)),
+                                                        cv2.FONT_HERSHEY_SIMPLEX,
+                                                        font_size,
+                                                        [255, 255, 255], line_size, delta_line)
+                        text = str(datetime.datetime.now().strftime("%Y.%m.%d %H:%M:%S"))
+                        Functions.draw_text_on_cv_frame(frame, text, (int(150 / k), int(30 / k)),
+                                                        cv2.FONT_HERSHEY_SIMPLEX,
+                                                        font_size,
+                                                        [255, 255, 255], line_size, delta_line)
+                        Functions.draw_text_on_cv_frame(frame, "Status: " + str(history_record.status),
+                                                        (int(w - 200 / k), int(30 / k)),
                                                         cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], 2)
+                                                        [255, 255, 255], line_size, delta_line)
                         current_align += align
-                        Functions.draw_text_on_cv_frame(frame, "Altitude: " + str(history_record.coordinates_alt), (int(left_align), int(current_align)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], 2)
-                        current_align += align
-                        Functions.draw_text_on_cv_frame(frame, "Speed: " + str(history_record.ground_speed), (int(left_align), int(current_align)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], 2)
-                        current_align += align
-                        Functions.draw_text_on_cv_frame(frame, "Is armed: " + str(history_record.is_armed), (int(left_align), int(current_align)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], 2)
-                        current_align += align
-                        Functions.draw_text_on_cv_frame(frame, "Status: " + str(history_record.status), (int(left_align), int(current_align)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], 2)
-                        current_align += align
+
                         Functions.draw_text_on_cv_frame(frame,
-                                                        "Battery voltage: " + str(history_record.battery_voltage),
-                                                        (int(left_align), int(current_align)),
+                                                        "Lat: " + str(history_record.coordinates_lat) + ", Lon: " + str(
+                                                            history_record.coordinates_lon) + ", Altitude : " + str(
+                                                            history_record.coordinates_alt),
+                                                        (int(20 / k), int(h - 50 / k)),
                                                         cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], 2)
-                        current_align += align
-                        Functions.draw_text_on_cv_frame(frame,
-                                                        "Battery level: " + str(history_record.battery_level) + "%",
-                                                        (int(left_align), int(current_align)),
+                                                        [255, 255, 255], line_size, delta_line)
+                        Functions.draw_text_on_cv_frame(frame, "Speed: " + str(
+                            history_record.ground_speed) + "; Battery: " + str(
+                            history_record.battery_voltage) + "V" + ", " + str(
+                            history_record.battery_level) + "%; " + "Last heartbeat: " + str(
+                            history_record.last_heartbeat) + " s.",
+                                                        (int(20 / k), int(h - 20 / k)),
                                                         cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], 2)
+                                                        [255, 255, 255], line_size, delta_line)
+
                         # **************************************************************************************************************
                         # **********************************************  Логотип ******************************************************
+                        def overlay_image_alpha(img, img_overlay, pos, alpha_mask):
+                            """Overlay img_overlay on top of img at the position specified by
+                            pos and blend using alpha_mask.
 
-                        bwidth, bheight = frame.shape[:2]
-                        if w > 500:
-                            fwidth, fheight = logo.shape[:2]
+                            Alpha mask must contain values within the range [0, 1] and be the
+                            same size as img_overlay.
+                            """
+
+                            x, y = pos
+
+                            # Image ranges
+                            y1, y2 = max(0, y), min(img.shape[0], y + img_overlay.shape[0])
+                            x1, x2 = max(0, x), min(img.shape[1], x + img_overlay.shape[1])
+
+                            # Overlay ranges
+                            y1o, y2o = max(0, -y), min(img_overlay.shape[0], img.shape[0] - y)
+                            x1o, x2o = max(0, -x), min(img_overlay.shape[1], img.shape[1] - x)
+
+                            # Exit if nothing to do
+                            if y1 >= y2 or x1 >= x2 or y1o >= y2o or x1o >= x2o:
+                                return
+
+                            channels = img.shape[2]
+
+                            alpha = alpha_mask[y1o:y2o, x1o:x2o]
+                            alpha_inv = 1.0 - alpha
+
+                            for c in range(channels):
+                                img[y1:y2, x1:x2, c] = (alpha * img_overlay[y1o:y2o, x1o:x2o, c] +
+                                                        alpha_inv * img[y1:y2, x1:x2, c])
+                            return img
+
+                        if k == 1:
+                            frame = overlay_image_alpha(frame, logo, (int((w / 2) - (wW / 2)), 0),
+                                                        logo[:, :, 3] / 255.0)
                         else:
-                            fwidth, fheight = logo_small.shape[:2]
-                        if w > 500 :
-                            # frame[:fwidth, int(bheight / 2 + (fheight / 2)) - fheight:int(bheight / 2 + (fheight / 2))] = logo[:]  # в левый верхний
-                            frame[:fwidth, bheight - fheight :] = logo[:]  # в левый верхний
-                        else:
-                            frame[:fwidth, bheight - fheight :] = logo_small[:]  # в левый верхний
+                            frame = overlay_image_alpha(frame, logo_small, (int((w / 2) - (wWs / 2)), 0),
+                                                        logo[:, :, 3] / 255.0)
+
+                        # scale = 1
+                        # backgroundImage = frame
+                        # global logo
+                        # logo = cv2.resize(np.uint8(np.asarray(logo)), (0, 0), fx=scale, fy=scale)
+                        # logo = np.uint8(np.asarray(logo))
+                        # # logo = cv2.resize(logo, (0, 0), fx=scale, fy=scale)
+                        # hHH, wWW, _ = logo.shape  # Size of foreground
+                        # pos = (int((w / 2) - (wWW / 2)), 0)
+                        # rows, cols, _ = backgroundImage.shape  # Size of background Image
+                        # y, x = pos[0], pos[1]  # Position of foreground/overlayImage image
+                        #
+                        # # loop over all pixels and apply the blending equation
+                        # for i in range(hHH):
+                        #     for j in range(wWW):
+                        #         if x + i >= rows or y + j >= cols:
+                        #             continue
+                        #         alpha = float(logo[i][j][2] / 255.0)  # read the alpha channel
+                        #         backgroundImage[x + i][y + j] = alpha * logo[i][j][:1] + (1 - alpha) * \
+                        #                                         backgroundImage[x + i][y + j]
+                        # frame = backgroundImage
+
+                        # bwidth, bheight = frame.shape[:2]
+                        # if w > 500:
+                        #     fwidth, fheight = logo.shape[:2]
+                        # else:
+                        #     fwidth, fheight = logo_small.shape[:2]
+                        # if w > 500 :
+                        #     # frame[:fwidth, int(bheight / 2 + (fheight / 2)) - fheight:int(bheight / 2 + (fheight / 2))] = logo[:]  # в левый верхний
+                        #     frame[:fwidth, bheight - fheight :] = logo[:]  # в левый верхний
+                        # else:
+                        #     frame[:fwidth, bheight - fheight :] = logo_small[:]  # в левый верхний
                         # frame[bwidth - fwidth:, :fheight] = logo[:]  # в левый нижний
                         # frame[bwidth - fwidth:, bheight - fheight :] = logo[:]  # в правый нижний
 
                         # ***************************************************************************************************************
                         # *************************************************** Compass ***************************************************
                         # Круг
-                        cv2.circle(frame, (int((w / 2) + (w / 3)), int((h / 2) + (h / 3))), int(h / 8), (0, 255, 0), 3)
+                        cv2.circle(frame, (int((w / 2) + (w / 2.5)), int((h / 2) + (h / 3))), int(h / 9),
+                                   (255, 255, 255), 6)
+                        cv2.circle(frame, (int((w / 2) + (w / 2.5)), int((h / 2) + (h / 3))), int(h / 10),
+                                   (207, 107, 70), 6)
+
                         # Направление обзора
-                        c = int(h / 8)
-                        x = int((w / 2) + (w / 3))
+                        c = int(h / 10)
+                        x = int((w / 2) + (w / 2.5))
                         y = int((h / 2) + (h / 3))
 
                         x_roll = math.cos(float((history_record.heading + 270) * np.pi / 180)) * c
                         y_roll = math.sin(float((history_record.heading + 270) * np.pi / 180)) * c
 
-                        x_n_roll = math.cos(float(270 * np.pi / 180)) * c
-                        y_n_roll = math.sin(float(270 * np.pi / 180)) * c
+                        # + и - нужны для того, чтобы буквы были ровно по середине
+                        x_n_roll = math.cos(float(270 * np.pi / 180)) * c - 3
+                        y_n_roll = math.sin(float(270 * np.pi / 180)) * c + 3
+
+                        x_s_roll = math.cos(float(450 * np.pi / 180)) * c - 3
+                        y_s_roll = math.sin(float(450 * np.pi / 180)) * c + 3
+
+                        x_w_roll = math.cos(float(540 * np.pi / 180)) * c - 3
+                        y_w_roll = math.sin(float(540 * np.pi / 180)) * c + 3
+
+                        x_e_roll = math.cos(float(360 * np.pi / 180)) * c - 3
+                        y_e_roll = math.sin(float(360 * np.pi / 180)) * c + 3
+
                         Functions.draw_text_on_cv_frame(frame,
                                                         "N",
                                                         (int(x + x_n_roll), int(y + y_n_roll)),
                                                         cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], 2)
+                                                        [255, 255, 255], line_size, delta_line)
                         Functions.draw_text_on_cv_frame(frame,
-                                                        "H",
+                                                        "S",
+                                                        (int(x + x_s_roll), int(y + y_s_roll)),
+                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
+                                                        [255, 255, 255], line_size, delta_line)
+                        Functions.draw_text_on_cv_frame(frame,
+                                                        "W",
+                                                        (int(x + x_w_roll), int(y + y_w_roll)),
+                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
+                                                        [255, 255, 255], line_size, delta_line)
+                        Functions.draw_text_on_cv_frame(frame,
+                                                        "E",
+                                                        (int(x + x_e_roll), int(y + y_e_roll)),
+                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
+                                                        [255, 255, 255], line_size, delta_line)
+                        Functions.draw_text_on_cv_frame(frame,
+                                                        "^",
                                                         (int(x + x_roll), int(y + y_roll)),
                                                         cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], 2)
+                                                        [0, 255, 0], line_size + 1, delta_line)
                         streams[title, "img"] = frame
-
-
 
                     # Functions.overlay_transparent(np.uint8(np.asarray(frame)), np.uint8(np.asarray(logo)), w / 2, h / 2, w, h)
 
@@ -427,7 +531,6 @@ class TranslationThread(Thread):
         capture.release()
         streams[title, "stop_trigger"] = True
         log("Thread %s is not alive" % title, "red")
-
 
 
 class APIHandler(tornado.web.RequestHandler):
