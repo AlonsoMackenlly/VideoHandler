@@ -108,11 +108,9 @@ class Drone(models.Model):
     name = models.CharField(max_length=200, verbose_name=name_verbose)
     connection_ip = models.CharField(max_length=200)
     camera_color_verbose = "Цветная камера"
-    camera_color = models.ForeignKey(Stream, on_delete=models.CASCADE, blank=True, null=True,
-                                     related_name='camera_color')
+    camera_color = models.ForeignKey(Stream, on_delete=models.CASCADE, blank=True, null=True, related_name='camera_color')
     camera_thermal_verbose = "Термальная камера"
-    camera_thermal = models.ForeignKey(Stream, on_delete=models.CASCADE, blank=True, null=True,
-                                       related_name='camera_thermal')
+    camera_thermal = models.ForeignKey(Stream, on_delete=models.CASCADE, blank=True, null=True, related_name='camera_thermal')
     outer_id = models.CharField('Удаленный ID', max_length=200, blank=True, null=True)
     drone_plane = models.ForeignKey(DronePlane, on_delete=models.CASCADE, default=1)
     work_air_speed = models.FloatField("Air speed", default=2)
