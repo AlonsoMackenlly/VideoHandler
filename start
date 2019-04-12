@@ -1,0 +1,4 @@
+ps aux | grep 'start_hub' | awk '{print $2}' | xargs kill -9
+ps aux | grep 'runserver' | awk '{print $2}' | xargs kill -9
+(/usr/bin/screen -dmS hub /root/.virtualenvs/django_hub/bin/python /root/django/manage.py start_hub) &> /root/django/django_hub.log
+(/usr/bin/screen -dmS web /root/.virtualenvs/django_hub/bin/python /root/django/manage.py runserver 0:8085) &> /root/django/django.log

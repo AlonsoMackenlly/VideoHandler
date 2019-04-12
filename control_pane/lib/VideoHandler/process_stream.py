@@ -17,7 +17,7 @@ from PIL import Image
 from termcolor import colored
 from PIL.JpegImagePlugin import JpegImageFile
 from control_pane.models import Stream, History, Drone
-
+# TODO: Кириллица
 LOGGING = True
 PORT = 15152
 CONFIDENCE = 0.1
@@ -59,8 +59,130 @@ net = cv2.dnn.readNetFromCaffe("/root/django/control_pane/lib/VideoHandler/Mobil
 ln = net.getLayerNames()
 ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 # *****************************************************************************************************************************
+class DrawingFunctions:
+    k = 0
+    font_size = 0
+    line_size = 0
+    delta_line = 0
+    @staticmethod
+    def drawCenterDistance(frame, w, h, distance):
+        DrawingFunctions.draw_text_on_cv_frame(frame, distance + ' m.', (int(w / 2), int(h / 2)),
+                                               cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size + 3, [255, 255, 255], DrawingFunctions.line_size,
+                                               DrawingFunctions.delta_line)
+    @staticmethod
+    def draw_text_on_cv_frame(frame, text, position, font, font_size, color, line_size):
+        # print(type(streams[title, "img"]))
+        cv2.putText(np.asarray(frame), text, position, font, font_size, [0, 0, 0], line_size + 5)
+        cv2.putText(np.asarray(frame), text, position, font, font_size, color, line_size)
+        # return frame
+    @staticmethod
+    def drawHorizontalRotation(frame, w, h, attitude_roll, c):
+        ''' Рисует горизонтальную линию, угол поворота коптера по оси roll
+            * frame = Картинка
+            * w = Ширина фрейма
+            * h = Высота фрейма
+            * attitude_roll = Угол в радианах (горизонтальное смещение коптера)
+            * c = длина отрезка в px
+        '''
+        x = int(w / 2 - c)
+        y = int(h / 2)
+        x_roll = math.cos(float(attitude_roll)) * c
+        y_roll = math.sin(float(attitude_roll)) * c
 
+        x_roll_until = int(math.cos(float(attitude_roll) * (-1)) * c)
+        y_roll_until = int(math.sin(float(attitude_roll) * (-1)) * c)
+
+        cv2.line(frame, (x_roll_until, y_roll_until), (int(x + x_roll + c), int(y + y_roll)), (207, 107, 70),
+                 int(8 / DrawingFunctions.k ** DrawingFunctions.k))
+        cv2.circle(frame, (int(w / 2), int(h / 2)), int(c + 50 / DrawingFunctions.k ** DrawingFunctions.k), (188, 188, 188), int(2 / DrawingFunctions.k),
+                   lineType=8)
+        return frame
+    @staticmethod
+    def drawTelemetry(frame, title, w, h, history_record):
+        ''' Накладывает слой телеметрии коптера
+            * frame = Картинка
+            * title = Название видеопотока
+            * w = Ширина фрейма
+            * h = Высота фрейма
+            * history_record = Объект записи истории
+            * k = Коэффициент масштабирования
+        '''
+
+        DrawingFunctions.draw_text_on_cv_frame(frame, title, (int(20 / DrawingFunctions.k), int(30 / DrawingFunctions.k)),
+                                               cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size, [255, 255, 255], DrawingFunctions.line_size,
+                                               DrawingFunctions.delta_line)
+        text = str(datetime.datetime.now().strftime("%Y.%m.%d %H:%M:%S"))
+        DrawingFunctions.draw_text_on_cv_frame(frame, text, (int(150 / DrawingFunctions.k), int(30 / DrawingFunctions.k)),
+                                               cv2.FONT_HERSHEY_DUPLEX, DrawingFunctions.font_size, [255, 255, 255], DrawingFunctions.line_size,
+                                               DrawingFunctions.delta_line)
+        DrawingFunctions.draw_text_on_cv_frame(frame, "Status: " + str(history_record.status),
+                                               (int(w - 200 / DrawingFunctions.k), int(30 / DrawingFunctions.k)), cv2.FONT_HERSHEY_SIMPLEX,
+                                               DrawingFunctions.font_size, [255, 255, 255], DrawingFunctions.line_size, DrawingFunctions.delta_line)
+        DrawingFunctions.draw_text_on_cv_frame(frame,
+                                               "Lat: " + str(history_record.coordinates_lat) + ", Lon: " + str(
+                                                   history_record.coordinates_lon) + ", Altitude : " + str(
+                                                   history_record.coordinates_alt),
+                                               (int(20 / DrawingFunctions.k), int(h - 50 / DrawingFunctions.k)), cv2.FONT_HERSHEY_SIMPLEX,
+                                               DrawingFunctions.font_size, [255, 255, 255], DrawingFunctions.line_size, DrawingFunctions.delta_line)
+
+        DrawingFunctions.draw_text_on_cv_frame(frame, "Speed: " + str(
+            history_record.ground_speed) + "; Battery: " + str(
+            history_record.battery_voltage) + "V" + ", " + str(
+            history_record.battery_level) + "%; " + "Last heartbeat: " + str(
+            history_record.last_heartbeat) + " s.",
+                                               (int(20 / DrawingFunctions.k), int(h - 20 / DrawingFunctions.k)),
+                                               cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size,
+                                               [255, 255, 255], DrawingFunctions.line_size, DrawingFunctions.delta_line)
+        return frame
+    @staticmethod
+    def drawCompass(frame, w, h, heading):
+        # Круг
+        cv2.circle(frame, (int((w / 2) + (w / 2.5)), int((h / 2) + (h / 3))), int(h / 9),
+                   (255, 255, 255), 6)
+        cv2.circle(frame, (int((w / 2) + (w / 2.5)), int((h / 2) + (h / 3))), int(h / 10),
+                   (207, 107, 70), 6)
+
+        # Направление обзора
+        c = int(h / 10)
+        x = int((w / 2) + (w / 2.5))
+        y = int((h / 2) + (h / 3))
+
+        x_roll = math.cos(float((heading + 270) * np.pi / 180)) * c
+        y_roll = math.sin(float((heading + 270) * np.pi / 180)) * c
+
+        # + и - нужны для того, чтобы буквы были ровно по середине
+        x_n_roll = math.cos(float(270 * np.pi / 180)) * c - 3
+        y_n_roll = math.sin(float(270 * np.pi / 180)) * c + 3
+
+        x_s_roll = math.cos(float(450 * np.pi / 180)) * c - 3
+        y_s_roll = math.sin(float(450 * np.pi / 180)) * c + 3
+
+        x_w_roll = math.cos(float(540 * np.pi / 180)) * c - 3
+        y_w_roll = math.sin(float(540 * np.pi / 180)) * c + 3
+
+        x_e_roll = math.cos(float(360 * np.pi / 180)) * c - 3
+        y_e_roll = math.sin(float(360 * np.pi / 180)) * c + 3
+
+        DrawingFunctions.draw_text_on_cv_frame(frame, "N", (int(x + x_n_roll), int(y + y_n_roll)),
+                                               cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size, [255, 255, 255], DrawingFunctions.line_size,
+                                               DrawingFunctions.delta_line)
+        DrawingFunctions.draw_text_on_cv_frame(frame, "S", (int(x + x_s_roll), int(y + y_s_roll)),
+                                               cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size, [255, 255, 255], DrawingFunctions.line_size,
+                                               DrawingFunctions.delta_line)
+        DrawingFunctions.draw_text_on_cv_frame(frame, "W", (int(x + x_w_roll), int(y + y_w_roll)),
+                                               cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size, [255, 255, 255], DrawingFunctions.line_size,
+                                               DrawingFunctions.delta_line)
+        DrawingFunctions.draw_text_on_cv_frame(frame, "E", (int(x + x_e_roll), int(y + y_e_roll)),
+                                               cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size, [255, 255, 255], DrawingFunctions.line_size,
+                                               DrawingFunctions.delta_line)
+        DrawingFunctions.draw_text_on_cv_frame(frame, "^", (int(x + x_roll), int(y + y_roll)),
+                                               cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size, [0, 255, 0], DrawingFunctions.line_size + 1,
+                                               DrawingFunctions.delta_line)
+        return frame
 class Functions:
+    @staticmethod
+    def getCenterDistance(GimbalYDegree, Altitude):
+        return Altitude * math.tan(GimbalYDegree)
     # @staticmethod
     # def blend_transparent(face_img, overlay_t_img) :
     #     # Split out the transparency mask from the colour info
@@ -110,43 +232,43 @@ class Functions:
             log("stream status with title = %s not saved" % title, "red")
 
     @staticmethod
-    def draw_text_on_cv_frame(frame, text, position, font, font_size, color, line_size):
-        # print(type(streams[title, "img"]))
-        cv2.putText(np.asarray(frame), text, position, font, font_size, [0, 0, 0], line_size + 5)
-        cv2.putText(np.asarray(frame), text, position, font, font_size, color, line_size)
-        # return frame
-
-    @staticmethod
     def write_header(tornado_self):
+        tornado_self.send_response(200)
         tornado_self.set_header("Access-Control-Allow-Origin", "*")
         tornado_self.set_header("Access-Control-Allow-Headers", "*")
         tornado_self.set_header("Access-Control-Allow-Methods", "*")
         tornado_self.set_header("Access-Control-Allow-Credentials", "true")
-
+        
         tornado_self.set_header("Cache-Control",
                                 "no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0")
         tornado_self.set_header("Connection", "close")
         tornado_self.set_header("Content-Type", "multipart/x-mixed-replace;boundary=--boundarydonotcross")
         tornado_self.set_header("Expires", "Mon, 3 Jan 2000 12:34:56 GMT")
         tornado_self.set_header("Pragma", "no-cache")
-
+        # print("+++++++++++++++")
+        tornado_self.end_headers()
+        # print("+++++++++++++++")
     @staticmethod
     def write_image(tornado_self, title):
-        o = io.BytesIO()
+        # o = io.BytesIO()
         try:
-            img = Image.fromarray(streams[title, "img"])
+            ret, jpeg = cv2.imencode('.jpg', streams[title, "img"], [int(cv2.IMWRITE_JPEG_QUALITY), 50])
+            # img = Image.fromarray(streams[title, "img"])
         # Если обычная картинка, то тут маленькие танцы с конвертами
         except:
-            img = Image.fromarray(np.uint8(np.asarray(streams[title, "img"])))
+            ret, jpeg = cv2.imencode('.jpg', np.asarray(streams[title, "img"]), [int(cv2.IMWRITE_JPEG_QUALITY), 50])
+            # img = Image.fromarray(np.uint8(np.asarray(streams[title, "img"])))
 
-        img.save(o, format="JPEG")
-
-        s = o.getvalue()
-
+        
+        # img.save(o, format="JPEG")
+        # o.seek(0)
+        # s = o.getvalue()
         tornado_self.write("--boundarydonotcross\n")
         tornado_self.write("Content-type: image/jpeg\r\n")
-        tornado_self.write("Content-length: %s\r\n\r\n" % len(s))
-        tornado_self.write(s)
+        tornado_self.write("Content-length: %s\r\n\r\n" % len(jpeg.tobytes()))
+        tornado_self.write(jpeg.tobytes())
+        # log(str(len(s)), 'cyan')
+        # log(str(len(tornado_self.body)), 'cyan')
 
     @staticmethod
     def write_status(tornadoself, message, status="info"):
@@ -393,24 +515,31 @@ class TranslationThread(Thread):
 
     def run(self):
         title = self.stream.title
-        capture = cv2.VideoCapture("http://172.19.1.10/tmpfs/snap.jpg?usr=admin&pwd=admin")
+        capture = cv2.VideoCapture(self.stream.stream_in)
+        capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG')) #XVID cv2.VideoWriter_fourcc(*'MJPG')
+        capture.set(cv2.CAP_PROP_FPS, 25) #XVID
+        capture.set(cv2.CAP_PROP_FRAME_WIDTH, 720)
+        capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         h = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
         w = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
         fps = int(capture.get(cv2.CAP_PROP_FPS))
         while h == 0 and w == 0 and fps == 0:
-            capture = cv2.VideoCapture("http://172.19.1.10/tmpfs/snap.jpg?usr=admin&pwd=admin")
+            capture = cv2.VideoCapture(self.stream.stream_in) #"http://172.19.1.10/tmpfs/snap.jpg?usr=admin&pwd=admin"
             h = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
             w = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
             fps = int(capture.get(cv2.CAP_PROP_FPS))
             time.sleep(5)
+
         nn_required = self.stream.nn_required
         if nn_required == True:
             nn_detection = DetectionFrame(self.stream, capture)
             nn_detection.start()
-        telemetry_required = self.stream.telemetry_required
+        telemetry_required = self.stream.telemetry_required 
+        record_required = self.stream.record_required
         self.stream.width = w
         self.stream.height = h
         self.stream.fps = fps
+        self.recordIsOff = False
         self.stream.save(update_fields=['width', 'height', 'fps'])
         log("Connected to stream %s with parameters W=%d, H=%d, FPS=%d " % (self.stream.stream_in, w, h, fps), "green")
 
@@ -433,7 +562,8 @@ class TranslationThread(Thread):
                     break
                 if ret:
                     last_packet = time.time()
-                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # ######################################
+                    # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # ######################################
+
                     # frame = cv2.resize(frame, (640, 480))
                     # w = 640
                     # h = 480
@@ -452,7 +582,6 @@ class TranslationThread(Thread):
                                 cv2.putText(overlay, streams[title, 'detections'][i]['text'], (xx, yy - 5), cv2.FONT_HERSHEY_TRIPLEX, 1, [0, 0, 0], 7)
                                 cv2.putText(overlay, streams[title, 'detections'][i]['text'], (xx, yy - 5), cv2.FONT_HERSHEY_TRIPLEX, 1, streams[title, 'detections'][i]['color'], 2)  #(52, 182, 170)
                             cv2.addWeighted(overlay, 0.5, frame, 1 - 0.5, 0, frame)
-
                         except Exception as e:
                             time.sleep(0.00001)
                         need_layers = True
@@ -465,6 +594,12 @@ class TranslationThread(Thread):
                             k = 1
                         else:
                             k = 0.7
+
+
+                        DrawingFunctions.k = k
+                        DrawingFunctions.font_size = 0.7 / k
+                        DrawingFunctions.line_size = int(2 / k)
+                        DrawingFunctions.delta_line = int(5 / k)
 
                         need_layers = True
                         align = h / 11
@@ -479,150 +614,81 @@ class TranslationThread(Thread):
                             t_db = time.time()
                         else:
                             if type(history_record) is str:
+                                ilog(self.stream.id)
                                 try:
-                                    history_record = History.objects.filter(
-                                        drone_id=Drone.objects.get(camera_color_id=self.stream.id).id).last()
+                                    history_record = History.objects.filter(drone_id=Drone.objects.get(camera_color_id=self.stream.id).id).last()
                                 except Exception as e:
-                                    history_record = History.objects.filter(
-                                        drone_id=Drone.objects.get(camera_thermal_id=self.stream.id).id).last()
+                                    history_record = History.objects.filter(drone_id=Drone.objects.get(camera_thermal_id=self.stream.id).id).last()
 
                         ''' 
                         ****************************** Горизонтальная линия под углом ******************************
                         '''
                         c = 250 / k ** k
+                        # frame = DrawingFunctions.drawHorizontalRotation(frame, w, h, history_record.attitude_roll, c)
                         x = int(w / 2 - c)
                         y = int(h / 2)
                         x_roll = math.cos(float(history_record.attitude_roll)) * c
                         y_roll = math.sin(float(history_record.attitude_roll)) * c
 
-                        cv2.line(frame, (x, y), (int(x + x_roll + c), int(y + y_roll)), (207, 107, 70), int(8 / k ** k))
-                        cv2.circle(frame, (int(w / 2), int(h / 2)), int(c + 50 / k ** k), (188, 188, 188), int(2 / k),
-                                   lineType=8)
+                        x_roll_until = int(math.cos(float(history_record.attitude_roll) * (-1)) * c)
+                        y_roll_until = int(math.sin(float(history_record.attitude_roll) * (-1)) * c)
 
+                        cv2.line(frame, (x, y), (int(x + x_roll + c), int(y + y_roll)),
+                                 (207, 107, 70),
+                                 int(8 / DrawingFunctions.k ** DrawingFunctions.k))
+                        cv2.circle(frame, (int(w / 2), int(h / 2)),
+                                   int(c + 50 / DrawingFunctions.k ** DrawingFunctions.k), (188, 188, 188),
+                                   int(2 / DrawingFunctions.k),
+                                   lineType=8)
                         ''' 
                         ****************************** Телеметрия ******************************
                         '''
-                        font_size = 0.7 / k
-                        line_size = int(2 / k)
-                        delta_line = int(5 / k)
-
-                        Functions.draw_text_on_cv_frame(frame, self.name, (int(20 / k), int(30 / k)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size, [255, 255, 255], line_size,
-                                                        delta_line)
+                        # frame = DrawingFunctions.drawTelemetry(frame, self.name, w, h, history_record)
+                        DrawingFunctions.draw_text_on_cv_frame(frame, title, (
+                        int(20 / DrawingFunctions.k), int(30 / DrawingFunctions.k)),
+                                                               cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size,
+                                                               [255, 255, 255], DrawingFunctions.line_size)
                         text = str(datetime.datetime.now().strftime("%Y.%m.%d %H:%M:%S"))
-                        Functions.draw_text_on_cv_frame(frame, text, (int(150 / k), int(30 / k)),
-                                                        cv2.FONT_HERSHEY_DUPLEX   , font_size, [255, 255, 255], line_size,
-                                                        delta_line)
-                        Functions.draw_text_on_cv_frame(frame, "Status: " + str(history_record.status),
-                                                        (int(w - 200 / k), int(30 / k)), cv2.FONT_HERSHEY_SIMPLEX,
-                                                        font_size, [255, 255, 255], line_size, delta_line)
-                        current_align += align
+                        DrawingFunctions.draw_text_on_cv_frame(frame, text, (
+                        int(150 / DrawingFunctions.k), int(30 / DrawingFunctions.k)),
+                                                               cv2.FONT_HERSHEY_DUPLEX, DrawingFunctions.font_size,
+                                                               [255, 255, 255], DrawingFunctions.line_size)
+                        DrawingFunctions.draw_text_on_cv_frame(frame, "Status: " + str(history_record.status),
+                                                               (int(w - 200 / DrawingFunctions.k),
+                                                                int(30 / DrawingFunctions.k)), cv2.FONT_HERSHEY_SIMPLEX,
+                                                               DrawingFunctions.font_size, [255, 255, 255],
+                                                               DrawingFunctions.line_size)
+                        DrawingFunctions.draw_text_on_cv_frame(frame,
+                                                               "Lat: " + str(
+                                                                   history_record.coordinates_lat) + ", Lon: " + str(
+                                                                   history_record.coordinates_lon) + ", Altitude : " + str(
+                                                                   history_record.coordinates_alt),
+                                                               (int(20 / DrawingFunctions.k),
+                                                                int(h - 50 / DrawingFunctions.k)),
+                                                               cv2.FONT_HERSHEY_SIMPLEX,
+                                                               DrawingFunctions.font_size, [255, 255, 255],
+                                                               DrawingFunctions.line_size)
 
-                        Functions.draw_text_on_cv_frame(frame,
-                                                        "Lat: " + str(history_record.coordinates_lat) + ", Lon: " + str(
-                                                            history_record.coordinates_lon) + ", Altitude : " + str(
-                                                            history_record.coordinates_alt),
-                                                        (int(20 / k), int(h - 50 / k)), cv2.FONT_HERSHEY_SIMPLEX,
-                                                        font_size, [255, 255, 255], line_size, delta_line)
-
-                        Functions.draw_text_on_cv_frame(frame, "Speed: " + str(
+                        DrawingFunctions.draw_text_on_cv_frame(frame, "Speed: " + str(
                             history_record.ground_speed) + "; Battery: " + str(
                             history_record.battery_voltage) + "V" + ", " + str(
                             history_record.battery_level) + "%; " + "Last heartbeat: " + str(
                             history_record.last_heartbeat) + " s.",
-                                                        (int(20 / k), int(h - 20 / k)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size,
-                                                        [255, 255, 255], line_size, delta_line)
-
-                        ''' 
-                        ****************************** Логотип ******************************
+                                                               (int(20 / DrawingFunctions.k),
+                                                                int(h - 20 / DrawingFunctions.k)),
+                                                               cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size,
+                                                               [255, 255, 255], DrawingFunctions.line_size)
                         '''
-
-                        # # Можно ли это вынести наверх в методы класса?
-                        # def overlay_image_alpha(img, img_overlay, pos, alpha_mask):
-                        #     """Overlay img_overlay on top of img at the position specified by
-                        #     pos and blend using alpha_mask.
-
-                        #     Alpha mask must contain values within the range [0, 1] and be the
-                        #     same size as img_overlay.
-                        #     """
-
-                        #     _x, _y = pos
-
-                        #     # Image ranges
-                        #     y1, y2 = max(0, _y), min(img.shape[0], _y + img_overlay.shape[0])
-                        #     x1, x2 = max(0, _x), min(img.shape[1], _x + img_overlay.shape[1])
-
-                        #     # Overlay ranges
-                        #     y1o, y2o = max(0, -_y), min(img_overlay.shape[0], img.shape[0] - _y)
-                        #     x1o, x2o = max(0, -_x), min(img_overlay.shape[1], img.shape[1] - _x)
-
-                        #     # Exit if nothing to do
-                        #     if y1 >= y2 or x1 >= x2 or y1o >= y2o or x1o >= x2o:
-                        #         break
-
-                        #     channels = img.shape[2]
-
-                        #     alpha = alpha_mask[y1o:y2o, x1o:x2o]
-                        #     alpha_inv = 1.0 - alpha
-
-                        #     for channel in range(channels):
-                        #         img[y1:y2, x1:x2, channel] = (alpha * img_overlay[y1o:y2o, x1o:x2o, channel] +
-                        #                                       alpha_inv * img[y1:y2, x1:x2, channel])
-
-                        # if k == 1:
-                        #     frame = overlay_image_alpha(frame, logo, (int((w / 2) - (wW / 2)), 0),
-                        #                                 logo[:, :, 3] / 255.0)
-                        # else:
-                        #     frame = overlay_image_alpha(frame, logo_small, (int((w / 2) - (wWs / 2)), 0),
-                        #                                 logo[:, :, 3] / 255.0)
-
-                        # scale = 1
-                        # backgroundImage = frame
-                        # global logo
-                        # logo = cv2.resize(np.uint8(np.asarray(logo)), (0, 0), fx=scale, fy=scale)
-                        # logo = np.uint8(np.asarray(logo))
-                        # # logo = cv2.resize(logo, (0, 0), fx=scale, fy=scale)
-                        # hHH, wWW, _ = logo.shape  # Size of foreground
-                        # pos = (int((w / 2) - (wWW / 2)), 0)
-                        # rows, cols, _ = backgroundImage.shape  # Size of background Image
-                        # y, x = pos[0], pos[1]  # Position of foreground/overlayImage image
-                        #
-                        # # loop over all pixels and apply the blending equation
-                        # for i in range(hHH):
-                        #     for j in range(wWW):
-                        #         if x + i >= rows or y + j >= cols:
-                        #             continue
-                        #         alpha = float(logo[i][j][2] / 255.0)  # read the alpha channel
-                        #         backgroundImage[x + i][y + j] = alpha * logo[i][j][:1] + (1 - alpha) * \
-                        #                                         backgroundImage[x + i][y + j]
-                        # frame = backgroundImage
-
-                        # bwidth, bheight = frame.shape[:2]
-                        # if w > 500:
-                        #     fwidth, fheight = logo.shape[:2]
-                        # else:
-                        #     fwidth, fheight = logo_small.shape[:2]
-                        # if w > 500 :
-                        #     # frame[:fwidth, int(bheight / 2 + (fheight / 2)) - fheight:int(bheight / 2 +
-                        #     (fheight / 2))] = logo[:]  # в левый верхний
-                        #     frame[:fwidth, bheight - fheight :] = logo[:]  # в левый верхний
-                        # else:
-                        #     frame[:fwidth, bheight - fheight :] = logo_small[:]  # в левый верхний
-                        # frame[bwidth - fwidth:, :fheight] = logo[:]  # в левый нижний
-                        # frame[bwidth - fwidth:, bheight - fheight :] = logo[:]  # в правый нижний
-
-                        ''' 
                         ****************************** Компас ******************************
                         '''
-                        # Круг
+                        # frame = DrawingFunctions.drawCompass(frame, w, h, history_record.heading)
                         cv2.circle(frame, (int((w / 2) + (w / 2.5)), int((h / 2) + (h / 3))), int(h / 9),
                                    (255, 255, 255), 6)
                         cv2.circle(frame, (int((w / 2) + (w / 2.5)), int((h / 2) + (h / 3))), int(h / 10),
                                    (207, 107, 70), 6)
 
                         # Направление обзора
-                        c = int(h / 10)
+
                         x = int((w / 2) + (w / 2.5))
                         y = int((h / 2) + (h / 3))
 
@@ -642,51 +708,78 @@ class TranslationThread(Thread):
                         x_e_roll = math.cos(float(360 * np.pi / 180)) * c - 3
                         y_e_roll = math.sin(float(360 * np.pi / 180)) * c + 3
 
-                        Functions.draw_text_on_cv_frame(frame, "N", (int(x + x_n_roll), int(y + y_n_roll)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size, [255, 255, 255], line_size,
-                                                        delta_line)
-                        Functions.draw_text_on_cv_frame(frame, "S", (int(x + x_s_roll), int(y + y_s_roll)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size, [255, 255, 255], line_size,
-                                                        delta_line)
-                        Functions.draw_text_on_cv_frame(frame, "W", (int(x + x_w_roll), int(y + y_w_roll)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size, [255, 255, 255], line_size,
-                                                        delta_line)
-                        Functions.draw_text_on_cv_frame(frame, "E", (int(x + x_e_roll), int(y + y_e_roll)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size, [255, 255, 255], line_size,
-                                                        delta_line)
-                        Functions.draw_text_on_cv_frame(frame, "^", (int(x + x_roll), int(y + y_roll)),
-                                                        cv2.FONT_HERSHEY_SIMPLEX, font_size, [0, 255, 0], line_size + 1,
-                                                        delta_line)
-                        streams[title, "img"] = frame
+                        DrawingFunctions.draw_text_on_cv_frame(frame, "N", (int(x + x_n_roll), int(y + y_n_roll)),
+                                                               cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size,
+                                                               [255, 255, 255], DrawingFunctions.line_size)
+                        DrawingFunctions.draw_text_on_cv_frame(frame, "S", (int(x + x_s_roll), int(y + y_s_roll)),
+                                                               cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size,
+                                                               [255, 255, 255], DrawingFunctions.line_size)
+                        DrawingFunctions.draw_text_on_cv_frame(frame, "W", (int(x + x_w_roll), int(y + y_w_roll)),
+                                                               cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size,
+                                                               [255, 255, 255], DrawingFunctions.line_size)
+                        DrawingFunctions.draw_text_on_cv_frame(frame, "E", (int(x + x_e_roll), int(y + y_e_roll)),
+                                                               cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size,
+                                                               [255, 255, 255], DrawingFunctions.line_size)
+                        DrawingFunctions.draw_text_on_cv_frame(frame, "^", (int(x + x_roll), int(y + y_roll)),
+                                                               cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size,
+                                                               [0, 255, 0], DrawingFunctions.line_size + 1)
+                        '''
+                        ****************************** Расстояние до центра камеры ******************************
+                        '''
+                        try:
+                            alt = float(history_record.coordinates_alt)
+                            gimbalDegree = 90 - float(history_record.gimbal_pitch_degree) * (-1)
+                            distanceFloor = Functions.getCenterDistance(gimbalDegree, alt)
+                            # print("**************")
+                            # print(str(alt))
+                            distanceFromCamera = math.sqrt((int(round(alt)) * int(round(alt))) + (int(round(float(distanceFloor))) * int(round(float(distanceFloor)))))
+                            # print("==============")
+                            # print(str(distanceFromCamera))
+                            # DrawingFunctions.drawCenterDistance(frame, w, h, distance)
+                            DrawingFunctions.draw_text_on_cv_frame(frame, str(int(distanceFromCamera)) + ' m.', (int(w / 2), int(h / 2)),
+                                                                   cv2.FONT_HERSHEY_SIMPLEX,
+                                                                   DrawingFunctions.font_size, [255, 255, 255],
+                                                                   DrawingFunctions.line_size)
+                            # cv2.line(frame, (int(w / 2), h), (int(w / 2), int(h / 2)), (0, 171, 1), 1)
+                            del_ = self.stream.xDegree / 2
+                            tan = np.tanh(del_)
+                            wDistance = np.around(2 * tan * float(distanceFromCamera))
+                            cv2.line(frame, (0, int(h / 2) + 20), (w, int(h / 2) + 20), (0, 171, 1), int(8 / DrawingFunctions.k ** DrawingFunctions.k) - 1)
+                            DrawingFunctions.draw_text_on_cv_frame(frame, str(wDistance) + " m.", (30, int(h / 2) + 10),
+                                                                   cv2.FONT_HERSHEY_SIMPLEX, DrawingFunctions.font_size,
+                                                                   [255, 255, 255], DrawingFunctions.line_size)
+                        except Exception as e:
+                            print(e)
 
+                        streams[title, "img"] = frame
                     if not need_layers:
                         streams[title, "img"] = frame
                     # capture.grab()
-                    if writer is None:
-                        print('record %d' % i)
-                        fourcc = cv2.VideoWriter_fourcc(*"XVID")
-                        writer = cv2.VideoWriter("/root/django/videos/output_%d.avi" % i, fourcc, 5,
-                            (w, h), True)
-                    else:
-                        if time.time() - t_record > 600:
-                            print('time is done 60 sec.')
-                            i = time.time()
-                            writer.release()
-                            writer = None
-                            t_record = time.time()
+                    if record_required == True:
+                        if writer is None:
+                            print('record %d' % i)
+                            fourcc = cv2.VideoWriter_fourcc(*"XVID")
+                            writer = cv2.VideoWriter("/root/django/videos/output_%d.avi" % i, fourcc, 20, (w, h), True)
                         else:
-                            if writer != None:
-                                # try:
-                                #     img = Image.fromarray(streams[title, "img"])
-                                # # Если обычная картинка, то тут маленькие танцы с конвертами
-                                # except:
-                                writer.write(frame)
+                            if time.time() - t_record > 600:
+                                print('time is done 60 sec.')
+                                i = time.time()
+                                writer.release()
+                                writer = None
+                                t_record = time.time()
+                            else:
+                                if writer != None:
+                                    writer.write(frame)
+                    else:
+                        if writer is not None:
+                            if recordIsOff == False:
+                                recordIsOff = True
+                                t_record = time.time()
+                            else:
+                                if time.time() - t_record > 900:
+                                    writer.release()
+                                    writer = None
 
-                    # if time.time() - t_restart > 90:
-                    #     streams[self.name, 'stop_trigger'] = True
-                    #     self.stop_trigger = True
-                    #     break
-                    # /tmp/streams/{title}
                 else:
                     if time.time() - last_packet > 1:
                         print("camera " + title + " reconnecting...")
@@ -701,10 +794,6 @@ class TranslationThread(Thread):
                             w = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
                             fps = int(capture.get(cv2.CAP_PROP_FPS))
                             time.sleep(5)
-                        # self.stop_trigger = True
-                        # log("Stream %s is not available" % title, "red")
-                        # time.sleep(1)
-                        # break
         else:
             log("Stream %s is not available" % title, "red")
         capture.release()
@@ -796,10 +885,13 @@ class APIHandler(tornado.web.RequestHandler):
 
 class MJPEGXeomaHandler(tornado.web.RequestHandler):
     def head(self):
+        self.send_response(200)
         self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0')
         self.set_header('Pragma', 'no-cache')
         self.set_header('Content-Type', 'multipart/x-mixed-replace;boundary=--jpgboundary')
         self.set_header('Connection', 'close')
+        self.end_headers()
+        
 
     @tornado.web.asynchronous
     @tornado.gen.coroutine
@@ -810,6 +902,7 @@ class MJPEGXeomaHandler(tornado.web.RequestHandler):
         log(self.request, 'cyan')
         x = 1
         while True:
+
             interval = 0.1 # 0.1
             # Почему это здесь, если есть метод write_image ? Зачем нужен интвервал?
             if self.served_image_timestamp + interval < time.time():
@@ -819,14 +912,18 @@ class MJPEGXeomaHandler(tornado.web.RequestHandler):
                 # Если обычная картинка, то тут маленькие танцы с конвертами
                 except:
                     img = Image.fromarray(np.uint8(np.asarray(streams[title, "img"])))
+
                 img.save(o, format="JPEG")
                 s = o.getvalue()
-
                 self.write("--jpgboundary")
-                # self.write("Content-type: image/jpeg\r\n")
-                self.write("Content-length: %s\r\n\r\n" % len(s))
+                self.set_header("Content-type", "image/jpeg")
+                self.set_header("Content-length", len(s))
+
+#                self.write("Content-type: image/jpeg\r\n")
+#                self.write("Content-length: %s\r\n\r\n" % len(s))
                 self.write(s)
-                # print("xeoma x = " + str(x))
+
+                #print("xeoma x = " + str(x))
                 # x = x + 1
                 self.served_image_timestamp = time.time()
                 yield tornado.gen.Task(self.flush)
@@ -834,19 +931,40 @@ class MJPEGXeomaHandler(tornado.web.RequestHandler):
                 yield tornado.gen.Task(ioloop.add_timeout, ioloop.time() + interval)
 
 
+
 class MJPEGHandler(tornado.web.RequestHandler):
+    def get(self):
+        Functions.write_header(self)
     @tornado.gen.coroutine
     def get(self):
+        ioloop = tornado.ioloop.IOLoop.current()
         log(self.request, 'cyan')
         title = self.get_argument("title", None)
         title = title.split('?')[0]
-        Functions.write_header(self)
+        self.served_image_timestamp = time.time()
         x = 0
+        interval = 0.1 # 0.1
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "*")
+        self.set_header("Access-Control-Allow-Methods", "*")
+        self.set_header("Access-Control-Allow-Credentials", "true")
+        
+        self.set_header("Cache-Control",
+                                "no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0")
+        self.set_header("Connection", "close")
+        self.set_header("Content-Type", "multipart/x-mixed-replace;boundary=--boundarydonotcross")
+        self.set_header("Expires", "Mon, 3 Jan 2000 12:34:56 GMT")
+        self.set_header("Pragma", "no-cache")
         while True:
-            Functions.write_image(self, title)
-            x = x + 1
-            log(str(x), 'cyan')
-            yield tornado.gen.Task(self.flush)  # I have no idea why it works
+            if self.served_image_timestamp + interval < time.time():
+                Functions.write_image(self, title)
+                x = x + 1
+                log(str(x), 'cyan')
+                self.served_image_timestamp = time.time()
+                yield tornado.gen.Task(self.flush)
+            else:
+                yield tornado.gen.Task(ioloop.add_timeout, ioloop.time() + interval)
+
 
     def options(self):
         # no body

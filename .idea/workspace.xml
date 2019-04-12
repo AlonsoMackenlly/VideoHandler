@@ -5,11 +5,47 @@
       <change afterPath="$PROJECT_DIR$/.idea/copter3.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/webServers.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/lib/DroneModules/DataService.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DataService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/lib/DroneModules/DrineDirectConnectionTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DrineDirectConnectionTest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneDirect.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneDirect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneDirectConnection.copy.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneDirectConnection.copy.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneDirectConnection.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneDirectConnection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneDirectMessages.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneDirectMessages.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneHub.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneHub.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneHubMessages.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneHubMessages.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneWsConnection.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneWsConnection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/lib/VideoHandler/process_stream.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/lib/VideoHandler/process_stream.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/control_pane/lib/VideoHandler/yolo_video.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/lib/VideoHandler/yolo_video.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/management/commands/start_hub.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/management/commands/start_hub.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/models.drone.copy.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/models.drone.copy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/models.sokol.copy.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/models.sokol.copy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/templates/control_pane/access.html" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/access.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/templates/control_pane/control.html" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/control.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/templates/control_pane/include/head.html" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/include/head.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/templates/control_pane/include/menu.html" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/include/menu.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/templates/control_pane/include/modal_add_stream.html" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/include/modal_add_stream.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/templates/control_pane/include/null_stats.html" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/include/null_stats.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/templates/control_pane/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/templates/control_pane/stream.html" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/stream.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/templates/control_pane/stream_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/stream_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/templates/control_pane/vue.html" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/vue.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/templates/control_pane/wrapper.html" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/templates/control_pane/wrapper.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/templatetags/control_pane_extras.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/templatetags/control_pane_extras.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_pane/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_pane/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/manage.py" beforeDir="false" afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/copter.png" beforeDir="false" afterPath="$PROJECT_DIR$/media/copter.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/wsgi.py" afterDir="false" />
     </list>
     <ignored path=".idea/" />
     <ignored path="control_pane/lib/DroneModules/" />
@@ -22,18 +58,36 @@
   <component name="ChangesViewManager" show_ignored="true" />
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/copter3$manage.coverage" NAME="manage Coverage Results" MODIFIED="1554095504742" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/VideoHandler$manage.coverage" NAME="manage Coverage Results" MODIFIED="1554702298644" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/VideoHandler$manage.coverage" NAME="manage Coverage Results" MODIFIED="1554726833189" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/VideoHandler$video_handler.coverage" NAME="video_handler Coverage Results" MODIFIED="1554455957471" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+  </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/control_pane/lib/VideoHandler/process_stream.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="414">
+              <caret line="723" column="111" lean-forward="true" selection-start-line="723" selection-start-column="111" selection-end-line="723" selection-end-column="111" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+                <element signature="e#3022#3907#0" />
+                <element signature="e#3022#3251#1" />
+                <element signature="e#3996#6430#0" />
+                <element signature="e#3975#4313#1" />
+                <element signature="e#10943#15509#0" />
+                <element signature="e#18155#19349#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>translation</find>
-      <find>TranslationThread</find>
-      <find>255</find>
-      <find>wait_rea</find>
       <find>N</find>
       <find>h =</find>
       <find>xeoma</find>
@@ -44,7 +98,31 @@
       <find>hhh</find>
       <find>x =</find>
       <find>= 2</find>
+      <find>do</find>
+      <find>do(</find>
+      <find>camera_color</find>
+      <find>draw_text_on_cv_frame</find>
+      <find>Functions.draw_text_on_cv_frame</find>
+      <find>draw</find>
+      <find>font_size</find>
+      <find>line_size</find>
+      <find>current_align</find>
+      <find>font</find>
+      <find>k</find>
+      <find>k</find>
+      <find>DrawingFunctions</find>
+      <find>drawHorizontalRotation</find>
+      <find>drawTelemetry</find>
+      <find>drawCompass</find>
+      <find>drawCenterDistance</find>
+      <find>getCenterDistance</find>
+      <find>_alt</find>
+      <find>stream_in</find>
     </findStrings>
+    <replaceStrings>
+      <replace>DrawingFunctions.draw_text_on_cv_frame</replace>
+      <replace>DrawingFunctions.k</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -60,13 +138,14 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/control_pane/lib/VideoHandler/process_stream.py" />
         <option value="$PROJECT_DIR$/control_pane/lib/DroneModules/DroneDirectConnection.py" />
+        <option value="$PROJECT_DIR$/control_pane/models.py" />
+        <option value="$PROJECT_DIR$/control_pane/lib/VideoHandler/process_stream.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1436" />
+    <option name="x" value="1912" />
     <option name="y" value="-8" />
     <option name="width" value="1936" />
     <option name="height" value="1056" />
@@ -77,7 +156,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane" />
       <pane id="Scope">
         <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
           <expand>
@@ -85,10 +163,29 @@
               <item name="VideoHandler" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
               <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
             </path>
+            <path>
+              <item name="VideoHandler" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
+              <item name="control_pane" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+            <path>
+              <item name="VideoHandler" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
+              <item name="control_pane" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+              <item name="lib" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+            <path>
+              <item name="VideoHandler" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
+              <item name="control_pane" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+              <item name="lib" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+              <item name="DroneModules" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -117,7 +214,7 @@
   </component>
   <component name="RunManager">
     <configuration name="manage" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
-      <module name="copter3" />
+      <module name="VideoHandler" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -130,7 +227,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="/var/www/virtuals/virtual_1/manage.py" />
-      <option name="PARAMETERS" value="start_hub" />
+      <option name="PARAMETERS" value="video_handler" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -152,7 +249,8 @@
       <workItem from="1553862941767" duration="2394000" />
       <workItem from="1554099758179" duration="25000" />
       <workItem from="1554438463053" duration="19968000" />
-      <workItem from="1554703209641" duration="697000" />
+      <workItem from="1554703209641" duration="844000" />
+      <workItem from="1554713330152" duration="10485000" />
     </task>
     <task id="LOCAL-00001" summary="...">
       <created>1554105695030</created>
@@ -172,12 +270,13 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="30808000" />
+    <option name="totallyTimeSpent" value="41440000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21108742" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.21321961" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -198,7 +297,7 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="R Graphics" order="3" />
-      <window_info anchor="right" id="Remote Host" order="4" visible="true" weight="0.18336888" />
+      <window_info active="true" anchor="right" id="Remote Host" order="4" visible="true" weight="0.18336888" />
       <window_info anchor="right" id="SciView" order="5" />
       <window_info anchor="right" id="R Packages" order="6" />
       <window_info anchor="right" id="Database" order="7" />
@@ -262,22 +361,52 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/control_pane/lib/VideoHandler/process_stream.py">
+    <entry file="file://$PROJECT_DIR$/control_pane/lib/DroneModules/DroneHubMessages.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="353">
-          <caret line="834" column="47" lean-forward="true" selection-start-line="834" selection-start-column="47" selection-end-line="834" selection-end-column="47" />
+        <state relative-caret-position="23">
+          <caret line="1" column="83" lean-forward="true" selection-start-line="1" selection-start-column="83" selection-end-line="1" selection-end-column="83" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/control_pane/lib/DroneModules/DroneHub.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#0#24#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/control_pane/lib/DroneModules/DroneDirectConnection.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="109" column="64" selection-start-line="109" selection-start-column="64" selection-end-line="109" selection-end-column="64" />
+        <state relative-caret-position="138">
+          <caret line="424" column="87" lean-forward="true" selection-start-line="424" selection-start-column="87" selection-end-line="424" selection-end-column="87" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
+            <element signature="e#14641#17651#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/control_pane/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="500">
+          <caret line="282" selection-start-line="282" selection-end-line="282" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/control_pane/lib/VideoHandler/process_stream.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="723" column="111" lean-forward="true" selection-start-line="723" selection-start-column="111" selection-end-line="723" selection-end-column="111" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#3022#3907#0" />
+            <element signature="e#3022#3251#1" />
+            <element signature="e#3996#6430#0" />
+            <element signature="e#3975#4313#1" />
+            <element signature="e#10943#15509#0" />
+            <element signature="e#18155#19349#0" />
           </folding>
         </state>
       </provider>

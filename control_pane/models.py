@@ -42,10 +42,12 @@ class Stream(models.Model):
     status = models.BooleanField('Статус', default=False, max_length=2)
     nn_required = models.BooleanField('Слой нейросети', default=False)
     telemetry_required = models.BooleanField('Слой телеметрии', default=False)
+    record_required = models.BooleanField('Производить запись', default=False)
     width = models.IntegerField('Ширина', default=0)
     height = models.IntegerField('Высота', default=0)
     fps = models.IntegerField('Кадров в секунду', default=0)
-
+    xDegree = models.IntegerField('Угол обзора (горизонт.)', default=92)
+    yDegree = models.IntegerField('Угол обзора (вертик.)', default=45)
     @classmethod
     def create(cls, title, stream_input, nn_required, width=0, height=0, fps=0):
         new_stream = cls(title=title, stream_input=stream_input, nn_required=nn_required, width=width, height=height,
@@ -278,7 +280,8 @@ class History(models.Model):
 
     outer_id = models.CharField('Удаленный ID', max_length=200, blank=True, null=True)
     uid = models.CharField('Уникальный идентификатор', max_length=200, blank=True, null=True)
-
+    
+    gimbal_pitch_degree = models.CharField('Угол подвеса (pitch)', max_length=200, blank=True, null=True)
     def __str__(self):
         return "Запись показателей № " + str(self.id)
 

@@ -74,6 +74,16 @@ class sign(object):
 
 class service():
     @staticmethod
+    def updateStreamRecordStatus(stream, status):
+        try:
+            if stream != None:
+                stream.record_required = status
+                stream.save(update_fields=['record_required'])
+        except Exception as e:
+            print("**************** updateStreamRecordStatus *****************")
+            print(e)
+            print("................ updateStreamRecordStatus ................")
+    @staticmethod
     def writeStatisticData(type, data, copter_id):
         try:
             if data.last_heartbeat < 10:
@@ -104,7 +114,8 @@ class service():
                                          outer_id=id,
                                          drone_id=copter_id,
                                          attitude_roll=data.attitude.roll,
-                                         heading=data.heading)
+                                         heading=data.heading,
+                                         gimbal_pitch_degree = data.gimbal.pitch)
                         record.save()
                         record = History.objects.last()
                         record.uid = "history_" + str(record.id)
@@ -247,11 +258,15 @@ class PilotControllWaypoint(object):
     def checker(self, not_upper = None, not_running = None):
 
         if not_upper == None and not_running == None:
+            current_route = Route.objects.filter(is_sync=True, status=['1']).last()
+            if current_route == None:
+                current_route = Route.objects.filter(is_sync=True, status=['4']).last()
+                if current_route != None:
+                    service.changeRouteStatus(current_route, 4, True, False)
+                    return False
             if sign.stop_sign == False:
-                allowContinue = False
                 if self.pause == False and self.cancel == False and self.not_upper == False and self.not_running == False:
-                    allowContinue = True
-                return allowContinue
+                    return True
             else:
                 return False
         else:
@@ -264,7 +279,7 @@ class PilotControllWaypoint(object):
             self.warning = True
         elif self.pause == True:
             pauseTimer = time.time()
-            while time.time() - pauseTimer < 60:
+            while time.time() - pauseTimer < 650:
                 if PilotControll.vehicle.mode != VehicleMode("LOITER"):
                     PilotControll.vehicle.mode = VehicleMode("LOITER")
                 if self.pause == False:
@@ -458,7 +473,7 @@ class DroneThread(Thread):
         self.current_route = ""
     def checkResultCommand(self):
         result = True
-        if self.current_command.warning == True or self.current_command.paused == True:
+        if self.current_command.warning == True:
             result = False
             file_logger.info("Возврат на домашнюю точку")
             PilotControll.vehicle.mode = VehicleMode("RTL")
@@ -466,6 +481,8 @@ class DroneThread(Thread):
             result = False
             file_logger.info("Возврат на домашнюю точку")
             PilotControll.vehicle.mode = VehicleMode("RTL")
+        elif self.current_command.paused == True:
+        	PilotControll.vehicle.mode = VehicleMode("LOITER")
         return result
     def connect(self):
         sign.stop_sign = True
@@ -473,7 +490,9 @@ class DroneThread(Thread):
         while self.drone.connected == False:
             try:
                 # connection_string = "udpout:10.8.0.101:14550"
-                self.vehicle = dronekit.connect(self.drone.connection_string, wait_ready=True)# dronekit.connect(self.drone.connection_string, wait_ready=False)
+                self.vehicle = dronekit.connect(self.drone.connection_string, wait_ready=True) # dronekit.connect(self.drone.connection_string, wait_ready=False)
+                self.vehicle.gimbal.rotate(-15, 0, 0)
+
                 # print(self.vehicle.attitude.roll)
                 sign.stop_sign = False
                 PilotControll.vehicle = self.vehicle
@@ -774,6 +793,12 @@ class DroneThread(Thread):
                                 paused = False
                                 success = True
                                 service.new_event(name = "Движение по маршруту начато", route_id = self.current_route.id)
+                                droneObject = DroneModel.objects.filter(id=self.drone.id).last()
+                                if droneObject != None:
+                                    service.updateStreamRecordStatus(droneObject.camera_color, True)
+                                    service.updateStreamRecordStatus(droneObject.camera_thermal, True)
+                                    service.new_event(name="Запись с камер видеонаблюдения включена", route_id=self.current_route.id)
+
                                 while issetRouteCommand:
                                     command = DroneCommand.objects.filter(status="2", is_async=False, is_sync=True, type='waypoint', route_uid=self.current_route.uid).order_by('order').exclude(outer_id=None).first()  # Сначала ищем выполняющиеся в текущий момент (если было потеряно соединение)
                                     if command != None:
@@ -804,6 +829,12 @@ class DroneThread(Thread):
                                                           route_id = self.current_route.id)
                                     log("Returning to Launch")
                                     self.drone.vehicle.mode = VehicleMode("RTL")
+                                    if droneObject != None:
+                                        service.updateStreamRecordStatus(droneObject.camera_color, False)
+                                        service.updateStreamRecordStatus(droneObject.camera_thermal, False)
+                                        service.new_event(name="Запись с камер видеонаблюдения будет завершена через 15 минут",
+                                                          route_id=self.current_route.id) # TODO: вынести в настройки проекта таймаут отключения
+
 
                     else:
                         break
