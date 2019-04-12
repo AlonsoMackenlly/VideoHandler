@@ -62,6 +62,7 @@ except:
 while True:
 	# read the next frame from the file
 	frame = cv2.imread('living_room.jpg', cv2.IMREAD_UNCHANGED)
+	print(type(frame))
 	grabbed = True
 	# (grabbed, frame) = vs.read()
 

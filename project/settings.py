@@ -108,8 +108,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'ru-ru'
-TIME_ZONE = 'Europe/Moscow'
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -117,18 +118,18 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+ 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-
-# **************************** CUSTOM SETTINGS ***************************
 COPTERS_MULTIPLE = False
-WS_CONNECTION_STRING = "ws://10.8.0.101:9095"
-DRONE_IP = "http://localhost"
+WS_CONNECTION_STRING = "ws://10.8.0.102:9095"
+DRONE_IP = "http://10.8.0.102"
 DRONE_PORT = "8085"
 VIDEO_PORT = "15152"
 WORK_BATTERY_VOLTAGE = 20.5

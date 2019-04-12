@@ -19,17 +19,10 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="root@localhost:10047">
+      <paths name="root@localhost:6698">
         <serverdata>
           <mappings>
-            <mapping deploy="/root/django" local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="root@localhost:6675">
-        <serverdata>
-          <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/var/www/virtuals/virtual_1" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

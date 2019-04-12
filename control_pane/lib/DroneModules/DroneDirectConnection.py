@@ -102,7 +102,6 @@ class service():
                                          battery_level=data.battery.level,
                                          gps_fixed=data.gps_0.satellites_visible,
                                          outer_id=id,
-                                         event_id = 2,
                                          drone_id=copter_id,
                                          attitude_roll=data.attitude.roll,
                                          heading=data.heading)
@@ -330,7 +329,7 @@ class PilotControll(object):
         copter_id = PilotControll.copter_id
         vehicle = PilotControll.vehicle
         log('..wait ready..')
-        PilotFunctions.wait_vehicle_ready()
+        # PilotFunctions.wait_vehicle_ready()
         # Copter should arm in GUIDED mode
         if vehicle.mode == VehicleMode("RTL"):
             if PilotFunctions.get_distance_metres(vehicle.location.global_frame, vehicle.home_location) < 1.5:
@@ -903,7 +902,7 @@ class _Drone(object):
             self.statistic_writing_thread.start()
             self.exchange_thread = DroneThread('exchange_thread', self)
             self.exchange_thread.start()
-            Thread(target = PilotFunctions.wait_vehicle_ready).start()
+            # Thread(target = PilotFunctions.wait_vehicle_ready).start()
             log('background threads started')
 
     @staticmethod

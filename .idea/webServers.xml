@@ -2,12 +2,12 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="9b39893f-f2f7-4375-82ad-fcade2b4e1a9" name="drone03" url="http://localhost">
-        <fileTransfer host="localhost" port="10047" rootFolder="/root/django" accessType="SFTP">
+      <webServer id="9b39893f-f2f7-4375-82ad-fcade2b4e1a9" name="drone03" url="http://control.sokol.center">
+        <fileTransfer host="control.sokol.center" port="422" rootFolder="/var/www/virtuals/virtual_1" accessType="SFTP">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
-          <option name="port" value="10047" />
+          <option name="port" value="422" />
         </fileTransfer>
       </webServer>
     </option>
