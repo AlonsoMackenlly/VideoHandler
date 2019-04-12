@@ -1,2 +1,6 @@
 control_pane/migrations
 project/settings.py
+*.iml
+/.idea/workspace.xml
+/.idea/libraries
+/.idea/ п
