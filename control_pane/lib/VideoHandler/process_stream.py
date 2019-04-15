@@ -62,7 +62,57 @@ ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 
 
 # *****************************************************************************************************************************
+class GeografyFunctions:
+    A_E = 6371.0  # Радиус земной поверхности в км.
+    @staticmethod
+    def SpherToCart(y, x):
+        p = 0.0
+        p = math.cos(y[0])
+        x[2] = math.sin(y[0])
+        x[1] = p * math.sin(y[1])
+        x[0] = p * math.cos(y[1])
 
+    @staticmethod
+    def CartToSpher(x, y):
+        p = 0.0
+        p = math.hypot(x[0], x[1])
+        y[1] = math.atan2(x[1], x[0])
+        y[0] = math.atan2(x[2], p)
+        return math.hypot(p, x[2])
+
+    @staticmethod
+    def Rotate(x, a, i):
+        c = 0.0
+        s = 0.0
+        xj = 0.0
+        j = 0
+        k = 0
+
+        j = (i + 1) % 3
+        k = (i - 1) % 3
+        c = math.cos(a)
+        s = math.sin(a)
+        xj = x[j] * c + x[k] * s
+        x[k] = -x[j] * s + x[k] * c
+        x[j] = xj
+
+    @staticmethod
+    def SphereDirect(pt1, azi, dist, pt2):
+        x = []
+        pt = []
+        pt[0] = (math.pi / 2) - dist
+        pt[1] = math.pi - azi
+        GeografyFunctions.SpherToCart(pt, x)  # сферические -> декартовы
+        GeografyFunctions.Rotate(x, pt1[0] - (math.pi / 2), 1)  # первое вращение
+        GeografyFunctions.Rotate(x, -pt1[1], 2)  # второе вращение
+        GeografyFunctions.CartToSpher(x, pt2)  # декартовы -> сферические
+    @staticmethod
+    def solveDirectGeodezyTask(lat_, lon_, azimut_, distance_earth, target_location):
+        lat_ = math.radians(lat_)
+        lon_ = math.radians(lon_)
+        target_location = []
+        GeografyFunctions.SphereDirect([lat_, lon_], float(azimut_), distance_earth, target_location)
+        return  target_location
 class DrawingFunctions:
 
     def __init__(self, w, h, title, history_record):
@@ -431,8 +481,24 @@ class DetectionFrame(Thread):
         t_restart = time.time()
         t_record = time.time()
         writer = None
+        i = 1
         while True:
             frame = streams[self.name, 'img']
+            # ******************************************************************************************
+            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2HSV)
+            color_low = (160, 173, 162)  # Данный цвет это темный ненасыщенный красный, близкий к бордовому
+            color_high = (255, 255, 250)  # Данный цвет это светлый насыщенный оранджевый
+            only_hsv = cv2.inRange(frame, color_low, color_high)
+            moments = cv2.moments(only_hsv, 1)  # получим моменты
+            x_moment = moments['m01']
+            y_moment = moments['m10']
+            area = moments['m00']
+            x = int(x_moment / area)  # Получим координаты x,y кота
+            y = int(y_moment / area)  # и выведем текст на изображение
+            cv2.rectangle(only_hsv, (x_moment, y_moment), (x, y), (0, 0, 255), cv2.FILLED)
+            # cv2.putText(frame, "Cat!", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+            # i += 1
+            # *******************************************************************************************
             if type(frame) != JpegImageFile:
                 h = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
                 w = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -632,6 +698,19 @@ class TranslationThread(Thread):
                                 alpha = 90 + float(history_record.gimbal_pitch_degree)  # Угол камеры 9
                                 beta = self.stream.xDegree / 2
                                 d = Functions.get_center_distance(alpha, alt)
+                                # ********************* Получение географических координат центра камеры **********************
+                                target_location_string = ""
+                                try:
+                                    target_location = []
+                                    target_location = GeografyFunctions.solveDirectGeodezyTask(lat_ = math.radians(history_record.coordinates_lat),
+                                                                             lon_ = math.radians(history_record.coordinates_lon),
+                                                                             azimut_ = float(history_record.attitude_roll),
+                                                                             distance_earth = d / GeografyFunctions.A_E,
+                                                                             target_location = target_location)
+                                    target_location_string = "%f, %f " % (target_location[0], target_location[1])
+                                except Exception as e:
+                                    print(e)
+                                # ********************* Получение географических координат центра камеры **********************
                                 D = math.sqrt((int(round(alt)) ** 2) + (int(round(float(d)) ** 2)))
                                 tan = math.tan(Functions.to_degree(beta))
                                 W = np.around(2 * tan * float(D))
@@ -640,7 +719,7 @@ class TranslationThread(Thread):
                                 # Округление
                                 df.draw_text_on_cv_frame(str(round(alpha, 2)) + " deg.", (int(w / 2), int(h / 2) - 40),
                                                          [255, 255, 255])
-                                df.draw_text_on_cv_frame(str(W) + " m.", (30, int(h / 2) + 10), [255, 255, 255])
+                                df.draw_text_on_cv_frame(str(W) + " m. " + target_location_string, (30, int(h / 2) + 10), [255, 255, 255])
                         except Exception as e:
                             print(e)
 
