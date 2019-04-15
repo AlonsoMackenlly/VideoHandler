@@ -159,7 +159,7 @@ class DroneCommand(models.Model):
     route_uid = models.CharField('Уникальный идентификатор маршрута', max_length=200, blank=True, null=True)
     outer_id = models.CharField('Внешний ID', max_length=200, blank=True, null=True)
     order = models.PositiveIntegerField('Сортировка', default=1)
-
+    altitude = models.IntegerField('Высота', default=30)
     def __str__(self):
         return "Команда: " + str(self.id)
 
@@ -196,11 +196,10 @@ class Event(models.Model):
     drone = models.ForeignKey(Drone, on_delete=models.SET_NULL, verbose_name="Дрон", blank=True, null=True)
     command = models.ForeignKey(DroneCommand, on_delete=models.SET_NULL, verbose_name="Команда", blank=True, null=True)
     route = models.ForeignKey(Route, on_delete=models.SET_NULL, verbose_name="Маршрут", blank=True, null=True)
-    drone_plane = models.ForeignKey(DronePlane, on_delete=models.SET_NULL, verbose_name="Взлетная площадка", blank=True,
-                                    null=True)
+    drone_plane = models.ForeignKey(DronePlane, on_delete=models.SET_NULL, verbose_name="Взлетная площадка", blank=True, null=True)
     is_seen = models.BooleanField("Просмотрено", default=False)
     uid = models.CharField('Уникальный идентификатор', max_length=200, blank=True, null=True)
-
+    screen = models.ImageField("Screen", "/root/django/static/uploads")
     def __str__(self):
         return self.name
 

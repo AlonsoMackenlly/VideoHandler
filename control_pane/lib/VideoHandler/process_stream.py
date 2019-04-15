@@ -16,6 +16,8 @@ from PIL import Image
 from termcolor import colored
 from PIL.JpegImagePlugin import JpegImageFile
 from control_pane.models import Stream, History, Drone
+from project.settings import LOW_COLOR_OBJECT_DETECTION
+from project.settings import HIGH_COLOR_OBJECT_DETECTION
 
 # TODO: Кириллица
 LOGGING = True
@@ -483,104 +485,126 @@ class DetectionFrame(Thread):
         writer = None
         i = 1
         while True:
-            frame = streams[self.name, 'img']
+            time.sleep(1)
+            # frame = streams[self.name, 'img'] !!!!!
             # ******************************************************************************************
-            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2HSV)
-            color_low = (160, 173, 162)  # Данный цвет это темный ненасыщенный красный, близкий к бордовому
-            color_high = (255, 255, 250)  # Данный цвет это светлый насыщенный оранджевый
-            only_hsv = cv2.inRange(frame, color_low, color_high)
-            moments = cv2.moments(only_hsv, 1)  # получим моменты
-            x_moment = moments['m01']
-            y_moment = moments['m10']
-            area = moments['m00']
-            x = int(x_moment / area)  # Получим координаты x,y кота
-            y = int(y_moment / area)  # и выведем текст на изображение
-            cv2.rectangle(only_hsv, (x_moment, y_moment), (x, y), (0, 0, 255), cv2.FILLED)
-            # cv2.putText(frame, "Cat!", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-            # i += 1
+            # color_low = (160, 173, 162)  # 160, 173, 162  Данный цвет это темный ненасыщенный красный, близкий к бордовому
+            # color_high = (255, 255, 250)  # Данный цвет это светлый насыщенный оранджевый
+            # # rectangles = []
+            # img2 = cv2.inRange(frame, color_low, color_high)
+            # # # moments = cv2.moments(only_hsv, 1)  # получим моменты
+            # # # x_moment = moments['m01']
+            # # # y_moment = moments['m10']
+            # # # area = moments['m00']
+            #
+            # kernelOpen = np.ones((5, 5))
+            # kernelClose = np.ones((30, 30))
+            # # kernelClose2=np.ones((50,50))
+            # maskOpen = cv2.morphologyEx(img2, cv2.MORPH_OPEN, kernelOpen)
+            # maskClose = cv2.morphologyEx(maskOpen, cv2.MORPH_CLOSE, kernelClose)
+            # # maskClose2=cv2.morphologyEx(maskClose,cv2.MORPH_CLOSE,kernelClose2)
+            # maskFinal = maskClose
+            # conts, h = cv2.findContours(maskFinal.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            #
+            # for pic, contour in enumerate(conts):
+            #     area = cv2.contourArea(contour)
+            #     # print(area)
+            #     if (area >= 100 and area < 50000):
+            #         overlay = frame.copy()
+            #
+            #         # cv2.fillPoly(overlay, conts, (29, 29, 150))
+            #         cv2.drawContours(overlay, contour, -1, (21, 92, 121), 3)  # 0, 140, 100
+            #         cv2.addWeighted(overlay, 0.58, frame, 1 - 0.5, 0, frame)
+            #         x, y, w, h = cv2.boundingRect(contour)
+            #         # img = cv2.rectangle(img,(x,y),(x+w,y+h),(29, 29, 150),3)
+            #         cv2.putText(frame, "warm", (x, y + h + 1), 2, 1, (0, 0, 0))  # text = str(pic+1)
+            #         print(area)
+            #         cv2.putText(frame, "warm", (x, y + h), 2, 1,
+            #                     (228, 0, 106))  # text = str(pic+1) #228, 0, 106 41, 255, 189
             # *******************************************************************************************
-            if type(frame) != JpegImageFile:
-                h = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
-                w = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
-                fps = int(capture.get(cv2.CAP_PROP_FPS))
-                try:
-                    prop = cv2.cv.CV_CAP_PROP_FRAME_COUNT if imutils.is_cv2() \
-                        else cv2.CAP_PROP_FRAME_COUNT
-                    total = int(capture.get(prop))
-                    print("[INFO] {} total frames in video".format(total))
-
-                # an error occurred while trying to determine the total
-                # number of frames in the video file
-                except Exception as e:
-                    log(e, "red")
-                    print("[INFO] could not determine # of frames in video")
-                    print("[INFO] no approx. completion time can be provided")
-                    total = -1
-
-                # construct a blob from the input frame and then perform a forward
-                # pass of the YOLO object detector, giving us our bounding boxes
-                # and associated probabilities
-                blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (416, 416), swapRB=True, crop=False)
-                net.setInput(blob)
-                start = time.time()
-                detections = net.forward()
-                end = time.time()
-                # initialize our lists of detected bounding boxes, confidences,
-                # and class IDs, respectively
-
-                # Миша, что это?
-                # boxes = []
-                # confidences = []
-                # classIDs = []
-
-                for i in np.arange(0, detections.shape[2]):
-                    streams[title, 'detections'][i] = {
-                        'color': '',
-                        'text': '',
-                        'rectangleXY': '',
-                        'rectangleXYend': '',
-                        'x': '',
-                        'y': '',
-                        'w': '',
-                        'h': '',
-                        't': ''
-                    }
-                    confidence = detections[0, 0, i, 2]
-
-                    # filter out weak detections by ensuring the `confidence` is
-                    # greater than the minimum confidence
-                    # print(img)
-                    if confidence > CONFIDENCE:
-                        t = time.time()
-                        # extract the index of the class label from the
-                        # `detections`, then compute the (x, y)-coordinates of
-                        # the bounding box for the object
-                        idx = int(detections[0, 0, i, 1])
-                        box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-                        (startX, startY, endX, endY) = box.astype("int")
-
-                        # draw the prediction on the frame
-                        label = CLASSES[idx]
-                        if label == "person":
-                            label = "HUMAN"
-                        y = startY - 15 if startY - 15 > 15 else startY + 15
-                        streams[title, 'detections'][i]['x'] = startX;
-                        streams[title, 'detections'][i]['y'] = y;
-                        streams[title, 'detections'][i]['w'] = (endX - startX);
-                        streams[title, 'detections'][i]['h'] = (endY - startY)
-                        streams[title, 'detections'][i]['color'] = COLORS[idx]
-                        streams[title, 'detections'][i]['text'] = label
-                        streams[title, 'detections'][i]['rectangleXY'] = (startX, startY)
-                        streams[title, 'detections'][i]['rectangleXYend'] = (endX, endY)
-                        streams[title, 'detections'][i]['t'] = time.time()
-                elap = (end - start)
-                print("[INFO] single frame took {:.4f} seconds".format(elap))
-                print("[INFO] estimated total time to finish: {:.4f}".format(
-                    elap * total))
-
-                if type(t) is not str:
-                    if time.time() - t > 5:
-                        streams[self.name, 'detections'] = {}
+            # !!!!!
+            # if type(frame) != JpegImageFile:
+            #     h = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            #     w = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
+            #     fps = int(capture.get(cv2.CAP_PROP_FPS))
+            #     try:
+            #         prop = cv2.cv.CV_CAP_PROP_FRAME_COUNT if imutils.is_cv2() \
+            #             else cv2.CAP_PROP_FRAME_COUNT
+            #         total = int(capture.get(prop))
+            #         print("[INFO] {} total frames in video".format(total))
+            #
+            #     # an error occurred while trying to determine the total
+            #     # number of frames in the video file
+            #     except Exception as e:
+            #         log(e, "red")
+            #         print("[INFO] could not determine # of frames in video")
+            #         print("[INFO] no approx. completion time can be provided")
+            #         total = -1
+            #
+            #     # construct a blob from the input frame and then perform a forward
+            #     # pass of the YOLO object detector, giving us our bounding boxes
+            #     # and associated probabilities
+            #     blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (416, 416), swapRB=True, crop=False)
+            #     net.setInput(blob)
+            #     start = time.time()
+            #     detections = net.forward()
+            #     end = time.time()
+            #     # initialize our lists of detected bounding boxes, confidences,
+            #     # and class IDs, respectively
+            #
+            #     # Миша, что это?
+            #     # boxes = []
+            #     # confidences = []
+            #     # classIDs = []
+            #
+            #     for i in np.arange(0, detections.shape[2]):
+            #         streams[title, 'detections'][i] = {
+            #             'color': '',
+            #             'text': '',
+            #             'rectangleXY': '',
+            #             'rectangleXYend': '',
+            #             'x': '',
+            #             'y': '',
+            #             'w': '',
+            #             'h': '',
+            #             't': ''
+            #         }
+            #         confidence = detections[0, 0, i, 2]
+            #
+            #         # filter out weak detections by ensuring the `confidence` is
+            #         # greater than the minimum confidence
+            #         # print(img)
+            #         if confidence > CONFIDENCE:
+            #             t = time.time()
+            #             # extract the index of the class label from the
+            #             # `detections`, then compute the (x, y)-coordinates of
+            #             # the bounding box for the object
+            #             idx = int(detections[0, 0, i, 1])
+            #             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+            #             (startX, startY, endX, endY) = box.astype("int")
+            #
+            #             # draw the prediction on the frame
+            #             label = CLASSES[idx]
+            #             if label == "person":
+            #                 label = "HUMAN"
+            #             y = startY - 15 if startY - 15 > 15 else startY + 15
+            #             streams[title, 'detections'][i]['x'] = startX;
+            #             streams[title, 'detections'][i]['y'] = y;
+            #             streams[title, 'detections'][i]['w'] = (endX - startX);
+            #             streams[title, 'detections'][i]['h'] = (endY - startY)
+            #             streams[title, 'detections'][i]['color'] = COLORS[idx]
+            #             streams[title, 'detections'][i]['text'] = label
+            #             streams[title, 'detections'][i]['rectangleXY'] = (startX, startY)
+            #             streams[title, 'detections'][i]['rectangleXYend'] = (endX, endY)
+            #             streams[title, 'detections'][i]['t'] = time.time()
+            #     elap = (end - start)
+            #     print("[INFO] single frame took {:.4f} seconds".format(elap))
+            #     print("[INFO] estimated total time to finish: {:.4f}".format(
+            #         elap * total))
+            #
+            #     if type(t) is not str:
+            #         if time.time() - t > 5:
+            #             streams[self.name, 'detections'] = {}
 
 
 class TranslationThread(Thread):
@@ -646,22 +670,50 @@ class TranslationThread(Thread):
                     # if nn_required:
 
                     if nn_required:
-                        overlay = frame.copy()
-                        try:
-                            for i in streams[title, 'detections']:
-                                xx = streams[title, 'detections'][i]['x']
-                                yy = streams[title, 'detections'][i]['y']
-                                cv2.rectangle(overlay, streams[title, 'detections'][i]['rectangleXY'],
-                                              streams[title, 'detections'][i]['rectangleXYend'],
-                                              streams[title, 'detections'][i]['color'], cv2.FILLED)
-                                cv2.putText(overlay, streams[title, 'detections'][i]['text'], (xx, yy - 5),
-                                            cv2.FONT_HERSHEY_TRIPLEX, 1, [0, 0, 0], 7)
-                                cv2.putText(overlay, streams[title, 'detections'][i]['text'], (xx, yy - 5),
-                                            cv2.FONT_HERSHEY_TRIPLEX, 1, streams[title, 'detections'][i]['color'],
-                                            2)  # (52, 182, 170)
-                            cv2.addWeighted(overlay, 0.5, frame, 1 - 0.5, 0, frame)
-                        except Exception as e:
-                            time.sleep(0.00001)
+                        # ******************************************************************
+                        color_low = LOW_COLOR_OBJECT_DETECTION  # 160, 173, 162  Данный цвет это темный ненасыщенный красный, близкий к бордовому
+                        color_high = HIGH_COLOR_OBJECT_DETECTION  # Данный цвет это светлый насыщенный оранджевый
+                        mask = cv2.inRange(frame, color_low, color_high)
+
+                        kernelOpen = np.ones((5, 5))
+                        kernelClose = np.ones((30, 30))
+                        maskOpen = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernelOpen)
+                        maskClose = cv2.morphologyEx(maskOpen, cv2.MORPH_CLOSE, kernelClose)
+                        maskFinal = maskClose
+                        conts, h = cv2.findContours(maskFinal.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+                        for pic, contour in enumerate(conts):
+                            area = cv2.contourArea(contour)
+                            # print(area)
+                            if (area >= 100 and area < 20000):
+                                overlay = frame.copy()
+
+                                # cv2.fillPoly(overlay, conts, (29, 29, 150))
+                                cv2.drawContours(overlay, contour, -1, (21, 92, 121), 3)  # 0, 140, 100
+                                cv2.addWeighted(overlay, 0.58, frame, 1 - 0.5, 0, frame)
+                                x, y, w, h = cv2.boundingRect(contour)
+                                # img = cv2.rectangle(img,(x,y),(x+w,y+h),(29, 29, 150),3)
+                                cv2.putText(frame, "warm", (x, y + h + 1), 2, 1, (0, 0, 0))  # text = str(pic+1)
+                                cv2.putText(frame, "warm", (x, y + h), 2, 1,
+                                            (228, 0, 106))  # text = str(pic+1) #228, 0, 106 41, 255, 189
+                        # ******************************************************************
+                        # !!!!!!!!!!!
+                        # overlay = frame.copy()
+                        # try:
+                        #     for i in streams[title, 'detections']:
+                        #         xx = streams[title, 'detections'][i]['x']
+                        #         yy = streams[title, 'detections'][i]['y']
+                        #         cv2.rectangle(overlay, streams[title, 'detections'][i]['rectangleXY'],
+                        #                       streams[title, 'detections'][i]['rectangleXYend'],
+                        #                       streams[title, 'detections'][i]['color'], cv2.FILLED)
+                        #         cv2.putText(overlay, streams[title, 'detections'][i]['text'], (xx, yy - 5),
+                        #                     cv2.FONT_HERSHEY_TRIPLEX, 1, [0, 0, 0], 7)
+                        #         cv2.putText(overlay, streams[title, 'detections'][i]['text'], (xx, yy - 5),
+                        #                     cv2.FONT_HERSHEY_TRIPLEX, 1, streams[title, 'detections'][i]['color'],
+                        #                     2)  # (52, 182, 170)
+                        #     cv2.addWeighted(overlay, 0.5, frame, 1 - 0.5, 0, frame)
+                        # except Exception as e:
+                        #     time.sleep(0.00001)
                         need_layers = True
                         streams[title, 'img'] = frame
                     if telemetry_required:
